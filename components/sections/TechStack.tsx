@@ -12,6 +12,9 @@ import { stack, stackIntroLines } from "@/lib/data";
  *
  * TODO(stack): the intro's staggered line reveal, and the image wipe that
  * counter-slides the photo from 1.3 scale.
+ *
+ * The four rows share one height via `minmax(min-content, 1fr)`, which is why
+ * the dividers stay evenly spaced whether or not a row's chips wrap.
  */
 export function TechStack() {
   return (

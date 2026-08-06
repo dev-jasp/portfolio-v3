@@ -103,7 +103,7 @@ components/
     DarkPanel.tsx            black rounded panel + dot grid [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [todo]
     IndentLink.tsx           accent dot + label, hover indent    [todo]
-    StackRow.tsx             category label + separated chips    [partial]
+    StackRow.tsx             category label + separated chips    [done]
     WorkCard.tsx             media + meta, scroll-scaled    [todo]
   layout/
     Menu.tsx                 morphing pill -> panel         [partial]
@@ -187,6 +187,12 @@ Three things in the design source were deliberately **not** carried over:
 2. **`_equalizeStackRows`.** It queries `[data-stacklabel]`, which does not
    exist in the markup — dead code. The row grid already equalises heights via
    `grid-template-rows: repeat(4, minmax(min-content, 1fr))`.
+
+   Its neighbour `_trimBars` is broken in a similar way and was reimplemented
+   rather than copied. It walks `row.children` — which is `[label, chipList]`,
+   the two grid cells, not the chips — so `querySelector('[data-bar]')` only
+   ever reaches the first separator in a row, and the line-start comparison
+   runs against the label's offset. `StackRow` walks the chips themselves.
 3. **`[data-arrowbtn-old]`.** A superseded hover treatment left in the file.
 
 One fix applied: the CTA's dot-cover scale is measured from the *dot slot*
