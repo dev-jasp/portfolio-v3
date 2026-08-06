@@ -96,7 +96,7 @@ app/
 components/
   ui/                      design-system primitives
     ArrowButton.tsx          CTA pill, dot-spread hover     [done]
-    Icons.tsx                arrow + LinkedIn/Instagram/GitHub  [done]
+    Icons.tsx                arrow, socials, copyright      [done]
     IconCircle.tsx           outlined social circle         [done]
     Marquee.tsx              RAF ticker, scroll-reactive    [done]
     Reveal.tsx               IntersectionObserver entrance  [done]
@@ -104,10 +104,10 @@ components/
     ImageSlot.tsx            replaces the design's <image-slot>  [done]
     StackRow.tsx             category label + separated chips    [done]
     WorkCard.tsx             media + meta, scroll-scaled    [done]
-    IndentLink.tsx           accent dot + label, hover indent    [todo]
+    IndentLink.tsx           accent dot + label, hover indent    [done]
   layout/
     Menu.tsx                 morphing pill -> panel         [partial]
-    Footer.tsx               clipped sticky reveal          [shell]
+    Footer.tsx               clipped sticky reveal          [done]
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
     Hero.tsx                 name, role, CTA, marquee       [done]

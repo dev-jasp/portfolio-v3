@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { usePanelTone } from "@/hooks/usePanelTone";
 import { IconCircle } from "@/components/ui/IconCircle";
+import { IndentLink } from "@/components/ui/IndentLink";
 import { navLinks, socials } from "@/lib/constants";
 import { durationMs, easeCss, menuLinks } from "@/lib/design/motion";
 import { color, menu } from "@/lib/design/tokens";
@@ -151,18 +152,15 @@ export function Menu() {
         >
           <nav className="mt-[22px] flex flex-col gap-0.5">
             {navLinks.map((link) => (
-              <a
+              <IndentLink
                 key={link.href}
                 href={link.href}
+                label={link.label}
+                dotSize={9}
+                gap={14}
                 onClick={() => setOpen(false)}
-                className="indent-link gap-[14px] text-[clamp(28px,3.4vw,40px)] leading-[1.3] font-medium tracking-[-0.03em]"
-              >
-                <span
-                  aria-hidden="true"
-                  className="size-[9px] flex-none rounded-full bg-accent"
-                />
-                <span>{link.label}</span>
-              </a>
+                className="text-[clamp(28px,3.4vw,40px)] leading-[1.3] font-medium tracking-[-0.03em]"
+              />
             ))}
           </nav>
 
