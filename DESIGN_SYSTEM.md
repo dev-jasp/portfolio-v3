@@ -113,7 +113,7 @@ components/
     Hero.tsx                 name, role, CTA, marquee       [done]
     TechStack.tsx            intro, layout, reveals         [done]
     SelectedWork.tsx         heading, badge, cards, archive [done]
-    Collaborate.tsx                                         [shell]
+    Collaborate.tsx          closing panel + CTA            [done]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
