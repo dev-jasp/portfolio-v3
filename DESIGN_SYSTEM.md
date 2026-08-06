@@ -111,7 +111,7 @@ components/
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
     Hero.tsx                 name, role, CTA, marquee       [done]
-    TechStack.tsx            intro + two-column layout      [partial]
+    TechStack.tsx            intro, layout, reveals         [done]
     SelectedWork.tsx  Collaborate.tsx                       [shell]
 
 hooks/                                                      [done]
@@ -135,6 +135,19 @@ public/images/jaspher-gargar.png                            [done]
 padding, panel and stacking that fix the page's rhythm — with its content left
 to the phase that owns it. `[partial]` means it works, but part of its own
 phase is still outstanding; the file's header comment says which part.
+
+### Entrances and the first frame
+
+`Reveal` drives opacity from React state, so its hidden state is in the
+server-rendered HTML. GSAP-driven entrances have to do the same by hand: the
+element ships with its hidden state as an inline style, and the timeline
+animates out of it. Setting the start state in an effect instead would paint
+one frame at the end state first.
+
+The cost is that the hidden state is real, so every such element also needs an
+explicit reduced-motion branch that applies the end state — otherwise it stays
+hidden for exactly the users who opted out of the animation. `data-reveal` on
+the element gives the `globals.css` rule a second shot at it.
 
 ### Shared values and the client boundary
 
