@@ -96,11 +96,11 @@ app/
 components/
   ui/                      design-system primitives
     ArrowButton.tsx          CTA pill, dot-spread hover     [done]
-    Icons.tsx                arrow                          [partial]
+    Icons.tsx                arrow + LinkedIn/Instagram/GitHub  [done]
+    IconCircle.tsx           outlined social circle         [done]
     Marquee.tsx              RAF ticker, scroll-reactive    [done]
     Reveal.tsx               IntersectionObserver entrance  [done]
     DarkPanel.tsx            black rounded panel + dot grid [todo]
-    IconCircle.tsx           outlined social circle         [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [todo]
     IndentLink.tsx           accent dot + label, hover indent    [todo]
     StackRow.tsx             category label + separated chips    [todo]
