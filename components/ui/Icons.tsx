@@ -64,6 +64,16 @@ export function InstagramIcon(props: IconProps) {
   );
 }
 
+/** Drawn rather than the © character, so it takes the same stroke as its row. */
+export function CopyrightIcon({ size = 16, ...props }: IconProps) {
+  return (
+    <Glyph size={size} {...props}>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M15.2 9.3a4 4 0 1 0 0 5.4" />
+    </Glyph>
+  );
+}
+
 export function GitHubIcon(props: IconProps) {
   return (
     <Glyph {...props}>
