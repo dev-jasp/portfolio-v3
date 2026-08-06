@@ -106,7 +106,7 @@ components/
     StackRow.tsx             category label + separated chips    [todo]
     WorkCard.tsx             media + meta, scroll-scaled    [todo]
   layout/
-    Menu.tsx                 morphing pill -> panel         [todo]
+    Menu.tsx                 morphing pill -> panel         [partial]
     Footer.tsx               clipped sticky reveal          [shell]
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
@@ -132,7 +132,16 @@ public/images/jaspher-gargar.png                            [done]
 
 `[shell]` means the file exists and carries its structural container — the
 padding, panel and stacking that fix the page's rhythm — with its content left
-to the phase that owns it.
+to the phase that owns it. `[partial]` means it works, but part of its own
+phase is still outstanding; the file's header comment says which part.
+
+### Scroll locking
+
+Lenis reads wheel and touch events rather than the scrollbar, so
+`body { overflow: hidden }` does **not** stop it. Anything that covers the
+viewport needs `data-lenis-prevent` as well — `globals.css` already carries the
+matching rule. `Menu` sets both: the attribute for the Lenis path, `overflow`
+for the reduced-motion path where Lenis never mounts.
 
 ### Page-level stacking
 

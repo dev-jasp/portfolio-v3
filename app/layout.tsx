@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Menu } from "@/components/layout/Menu";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { site } from "@/lib/constants";
 import "./globals.css";
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <SmoothScroll />
-        {/* TODO(phase 2): <Menu /> mounts here, above the page content. */}
+        <Menu />
         {children}
       </body>
     </html>
