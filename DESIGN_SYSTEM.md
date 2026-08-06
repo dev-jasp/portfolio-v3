@@ -103,7 +103,7 @@ components/
     DarkPanel.tsx            black rounded panel + dot grid [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [todo]
     IndentLink.tsx           accent dot + label, hover indent    [todo]
-    StackRow.tsx             category label + separated chips    [todo]
+    StackRow.tsx             category label + separated chips    [partial]
     WorkCard.tsx             media + meta, scroll-scaled    [todo]
   layout/
     Menu.tsx                 morphing pill -> panel         [partial]
@@ -111,7 +111,8 @@ components/
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
     Hero.tsx                 name, role, CTA, marquee       [done]
-    TechStack.tsx  SelectedWork.tsx  Collaborate.tsx        [shell]
+    TechStack.tsx            intro + two-column layout      [partial]
+    SelectedWork.tsx  Collaborate.tsx                       [shell]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
