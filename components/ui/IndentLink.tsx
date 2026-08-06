@@ -16,6 +16,10 @@ type Props = {
  * The indent is the whole gesture — `.indent-link` in `globals.css` opts out of
  * the global link fade so the row moves rather than dims, which is why this
  * needs a class at all instead of utilities at the usage site.
+ *
+ * On touch the row is floored at 44px. Gated on `pointer: coarse` rather than a
+ * width breakpoint so a narrow desktop window keeps the tight 24px rhythm the
+ * footer is drawn around, and only actual fingers get the larger target.
  */
 export function IndentLink({
   href,
@@ -29,7 +33,11 @@ export function IndentLink({
     <a
       href={href}
       onClick={onClick}
-      className={className ? `indent-link ${className}` : "indent-link"}
+      className={
+        className
+          ? `indent-link pointer-coarse:min-h-11 ${className}`
+          : "indent-link pointer-coarse:min-h-11"
+      }
       style={{ gap }}
     >
       <span

@@ -28,7 +28,7 @@ const BADGE_LIFT = "1em";
 export function SelectedWork() {
   return (
     <section id="work">
-      <div className="flex flex-wrap items-start justify-between gap-10 px-gutter py-10">
+      <div className="flex flex-wrap items-start justify-between gap-10 px-gutter py-[clamp(28px,5vw,40px)]">
         <Reveal>
           <h2 className="text-[clamp(46px,7vw,120px)] leading-[0.88] font-medium tracking-[-0.045em]">
             Selected
@@ -52,16 +52,18 @@ export function SelectedWork() {
         </Reveal>
       </div>
 
-      <div className="flex flex-col gap-[200px] px-gutter pb-15">
+      {/* 200px between cards is the rhythm at desktop; on a phone it is most
+          of a screen of nothing, so it scales with the viewport instead. */}
+      <div className="flex flex-col gap-[clamp(72px,14vw,200px)] px-gutter pb-[clamp(32px,6vw,60px)]">
         {projects.map((project) => (
           <WorkCard key={project.id} project={project} />
         ))}
       </div>
 
-      <div className="flex justify-end px-gutter pt-5 pb-24">
+      <div className="flex justify-end px-gutter pt-5 pb-[clamp(48px,10vw,96px)]">
         <a
           href={site.archiveUrl}
-          className="text-[22px] font-medium tracking-[-0.02em]"
+          className="text-[22px] font-medium tracking-[-0.02em] pointer-coarse:py-2"
         >
           View Archive.
         </a>

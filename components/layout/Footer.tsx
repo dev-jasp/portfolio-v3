@@ -23,7 +23,7 @@ export function Footer() {
 
   return (
     <div className="relative z-1 h-[min(700px,100svh)] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]">
-      <footer className="fixed inset-x-0 bottom-0 flex h-[min(700px,100svh)] flex-col bg-paper px-11 pt-14 pb-[30px]">
+      <footer className="fixed inset-x-0 bottom-0 flex h-[min(700px,100svh)] flex-col bg-paper px-gutter pt-[clamp(32px,6vw,56px)] pb-[30px]">
         <div className="flex flex-wrap items-start justify-between gap-10">
           {/* Contact is omitted — the Collaborate panel directly above is it. */}
           <nav className="flex flex-col gap-[3px] text-2xl">
@@ -61,7 +61,7 @@ export function Footer() {
           </span>
           <a
             href={site.archiveUrl}
-            className="flex-none text-[22px] font-medium tracking-[-0.02em] whitespace-nowrap"
+            className="flex-none text-[22px] font-medium tracking-[-0.02em] whitespace-nowrap pointer-coarse:py-2"
           >
             View Archive.
           </a>

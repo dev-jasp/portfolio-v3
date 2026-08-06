@@ -43,7 +43,10 @@ export const menu = {
     top: "12px",
     right: "12px",
     width: "min(560px, 92vw)",
-    height: "min(660px, calc(100vh - 24px))",
+    // `svh`, not `vh`: on mobile `100vh` is the viewport with browser chrome
+    // retracted, so a `vh`-sized panel is taller than the screen it opens on
+    // and its footer sits under the address bar.
+    height: "min(660px, calc(100svh - 24px))",
     borderRadius: "26px",
     padding: "36px 36px 30px",
   },
