@@ -1,5 +1,9 @@
+"use client";
+
+import { useRef } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
+import { useScrollScale } from "@/hooks/useScrollScale";
 import type { Project } from "@/types";
 
 /** The meta column trails the media in, once the card is properly on screen. */
@@ -14,15 +18,20 @@ const META_DELAY_MS = 260;
  * screenshot happens to be — light on dark areas, dark on light ones, without
  * a scrim.
  *
- * TODO(work): scale from 0.86 toward 1 as the card centres in the viewport.
+ * The card scales toward 1 and fades in as it approaches the viewport's
+ * centre, so the column reads as one card at a time rather than a list.
  */
 export function WorkCard({ project }: { project: Project }) {
   const { name, description, stack, year, image, imagePlaceholder } = project;
+  const cardRef = useRef<HTMLElement>(null);
+
+  useScrollScale(cardRef);
 
   return (
     <article
+      ref={cardRef}
       data-card
-      className="mx-auto grid w-full max-w-[1349px] grid-cols-[minmax(0,1fr)_minmax(260px,340px)] items-start gap-10 max-[1100px]:grid-cols-1"
+      className="mx-auto grid w-full max-w-[1349px] grid-cols-[minmax(0,1fr)_minmax(260px,340px)] items-start gap-10 will-change-transform max-[1100px]:grid-cols-1"
     >
       <div className="relative mx-auto aspect-[969/642] w-full max-w-[969px] overflow-hidden rounded-card bg-ink">
         <ImageSlot
