@@ -1,0 +1,32 @@
+export type NavLink = {
+  label: string;
+  href: string;
+};
+
+export type SocialPlatform = "linkedin" | "instagram" | "github";
+
+export type SocialLink = {
+  platform: SocialPlatform;
+  label: string;
+  href: string;
+};
+
+export type StackCategory = {
+  /** Rendered uppercase in Space Mono. Keep it one word where possible. */
+  label: string;
+  items: string[];
+};
+
+export type Project = {
+  id: string;
+  /** Stamped over the media, bottom-left, in tracked-out Space Mono. */
+  name: string;
+  description: string;
+  stack: string[];
+  year?: string;
+  /** Path under `public/`. Omit to render the empty slot placeholder. */
+  image?: string;
+  /** Shown inside the empty slot. */
+  imagePlaceholder?: string;
+  href?: string;
+};

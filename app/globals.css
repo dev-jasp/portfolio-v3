@@ -1,26 +1,237 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================================
+   DESIGN TOKENS
+   Single source of truth for the portfolio's visual language.
+   Mirrored for JS/GSAP consumption in `lib/design/tokens.ts` — keep in sync.
+   ========================================================================= */
+@theme {
+  /* -- Color ---------------------------------------------------------------
+     A two-tone system: ink on paper, inverted inside dark panels, with one
+     accent used only for emphasis (dots, badges, the CTA spread).           */
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-accent: #f3350c;
+
+  /* Muted greys, ordered light -> dark. Each has exactly one job so a value
+     never drifts between sections. */
+  --color-surface: #efefef; /* image frame backdrop */
+  --color-hairline: #c9c9c9; /* chip separators */
+  --color-on-dark-muted: #d6d6d6; /* subtitle inside dark panels */
+  --color-muted: #9a9a9a; /* section eyebrow labels */
+  --color-muted-strong: #8e8e8e; /* tech chips */
+  --color-muted-deep: #6f6f6f; /* footer copyright */
+
+  /* -- Type ----------------------------------------------------------------
+     Space Grotesk carries display + UI, Space Mono carries labels and any
+     text that should read as "data" (roles, categories, tech lists).        */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* -- Radius --------------------------------------------------------------- */
+  --radius-frame: 14px; /* stack photo */
+  --radius-card: 22px; /* work card media, menu cta */
+  --radius-pill-sm: 23px; /* closed menu pill */
+  --radius-panel-sm: 26px; /* open menu panel */
+  --radius-panel: 28px; /* hero + collaborate panels */
+
+  /* -- Easing ---------------------------------------------------------------
+     Four curves, each with a fixed role. Nothing in the system eases with
+     anything else.                                                          */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1); /* entrances */
+  --ease-morph: cubic-bezier(0.76, 0, 0.24, 1); /* menu open/close, bars */
+  --ease-lift: cubic-bezier(0.33, 1, 0.68, 1); /* small hover lifts */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* things leaving fast */
+
+  /* -- Duration ------------------------------------------------------------- */
+  --duration-tone: 240ms; /* colour-only swaps */
+  --duration-indent: 300ms; /* nav link indent */
+  --duration-bars: 420ms; /* hamburger rotate */
+  --duration-link-in: 460ms;
+  --duration-close: 520ms;
+  --duration-open: 750ms;
+  --duration-reveal: 780ms;
+
+  /* -- Structure ------------------------------------------------------------ */
+  --spacing-gutter: clamp(18px, 3vw, 44px); /* shared section inset */
+  --inset-panel: 10px; /* frame around dark panels */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ============================================================================
+   BASE
+   ========================================================================= */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Lenis drives scrolling itself; native smooth scroll fights it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis {
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    opacity: 0.6;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================================
+   COMPONENT CLASSES
+   Only patterns that need pseudo-elements, JS-queried hooks, or state that
+   utilities can't express live here. Everything else stays in the component.
+   ========================================================================= */
+@layer components {
+  /* -- Dot grid ------------------------------------------------------------
+     The texture that identifies a dark panel.                              */
+  .dot-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.22) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 46px 46px;
+  }
+
+  /* -- Arrow button --------------------------------------------------------
+     Rest: white pill, accent dot, arrow slot collapsed to zero width.
+     Hover (driven by GSAP in `ArrowButton.tsx`): the dot scales from its own
+     centre until it covers the pill, the label inverts, and the slot opens.
+     The structural rules live here; every animated property is GSAP's.     */
+  .arrow-btn {
+    display: inline-flex;
+    align-items: center;
+  }
+  .arrow-btn:hover {
+    opacity: 1; /* opt out of the global link fade */
+  }
+  .arrow-btn__pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .arrow-btn__dot-slot {
+    position: relative;
+    flex: none;
+  }
+  .arrow-btn__dot {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--color-accent);
+    will-change: transform;
+  }
+  .arrow-btn__label {
+    position: relative;
+    white-space: nowrap;
+  }
+  .arrow-btn__arrow-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 0;
+    flex: none;
+  }
+
+  /* -- Indent link ---------------------------------------------------------
+     Accent dot + label. Hover slides the whole row right without fading.   */
+  .indent-link {
+    display: flex;
+    align-items: center;
+    transition: padding var(--duration-indent) ease;
+  }
+  .indent-link:hover {
+    opacity: 1;
+    padding-left: 14px;
+  }
+
+  /* -- Icon circle ---------------------------------------------------------
+     Outlined circle that inverts on hover. Footer variant also lifts.      */
+  .icon-circle {
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-ink);
+    background: transparent;
+    color: var(--color-ink);
+    transition:
+      background var(--duration-tone) ease,
+      color var(--duration-tone) ease,
+      transform 260ms var(--ease-lift);
+  }
+  .icon-circle:hover {
+    opacity: 1;
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .icon-circle--lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* ============================================================================
+   MOTION PREFERENCES
+   Reveals resolve to their end state; nothing loops. JS timelines check the
+   same query via `useReducedMotion`.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
