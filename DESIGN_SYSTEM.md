@@ -135,6 +135,17 @@ padding, panel and stacking that fix the page's rhythm — with its content left
 to the phase that owns it. `[partial]` means it works, but part of its own
 phase is still outstanding; the file's header comment says which part.
 
+### Shared values and the client boundary
+
+`DARK_PANEL_ATTR` / `darkPanelProps` live in `lib/design/tokens.ts`, not beside
+the `usePanelTone` hook that consumes them. A plain value exported from a
+`"use client"` module becomes a client reference, so a server component that
+imports it receives something that is not the object — here the attribute
+simply never rendered, and the pill never inverted, with no error anywhere.
+
+Any constant shared between a client hook and server-rendered markup belongs in
+a module with no `"use client"` directive.
+
 ### Scroll locking
 
 Lenis reads wheel and touch events rather than the scrollbar, so

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { usePanelTone } from "@/hooks/usePanelTone";
 import { IconCircle } from "@/components/ui/IconCircle";
 import { navLinks, socials } from "@/lib/constants";
 import { durationMs, easeCss, menuLinks } from "@/lib/design/motion";
-import { menu } from "@/lib/design/tokens";
+import { color, menu } from "@/lib/design/tokens";
 
 /** The properties that carry the pill -> panel morph. */
 const MORPHED = ["width", "height", "top", "right", "border-radius", "padding"];
@@ -15,8 +16,7 @@ const CLOSE_DELAY_MS = 120;
 /** Content leaves fast, well before the panel has finished shrinking. */
 const CONTENT_FADE_OUT_MS = 140;
 
-const BAR =
-  "absolute top-1/2 left-1/2 -mt-px -ml-[11px] block h-0.5 w-[22px] bg-ink transition-[transform,background] duration-[420ms] ease-morph";
+const BAR = "absolute top-1/2 left-1/2 -mt-px -ml-[11px] block h-0.5 w-[22px]";
 
 /**
  * The nav is one element in two states: a 46px pill in the corner, and a panel
@@ -24,13 +24,22 @@ const BAR =
  * radius and padding are all transitioned, which is what makes it read as one
  * object growing rather than two things cross-fading.
  *
- * TODO(nav): link stagger on open/close, the Collaborate card at the panel's
- * foot, and pill tone inversion over light sections.
+ * TODO(nav): link stagger on open/close, and the Collaborate card at the
+ * panel's foot.
  */
 export function Menu() {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
+
+  // Measuring is pointless while open — the panel is white regardless, and its
+  // geometry is mid-transition, so any reading would be noise.
+  const onDark = usePanelTone(panelRef, !open);
+
+  // Open, the panel is always paper with ink bars. Closed, the pill inverts
+  // against whatever it happens to be sitting over.
+  const paperToned = open || onDark;
 
   const geometry = open ? menu.open : menu.closed;
 
@@ -48,6 +57,10 @@ export function Menu() {
   const contentTransition = open
     ? `opacity ${durationMs.linkIn}ms ${easeCss.reveal} ${menuLinks.baseDelayMs}ms`
     : `opacity ${CONTENT_FADE_OUT_MS}ms ease`;
+
+  // Bars rotate on the morph curve but swap tone on a plain ease — the two are
+  // different kinds of change and shouldn't share a curve.
+  const barTransition = `transform ${durationMs.bars}ms ${easeCss.morph}, background ${durationMs.bars}ms ease`;
 
   // The page must not scroll under the panel. `overflow` alone doesn't do it
   // while Lenis is driving — Lenis reads wheel events, not the scrollbar — so
@@ -87,10 +100,15 @@ export function Menu() {
       />
 
       <div
+        ref={panelRef}
         id={panelId}
         data-lenis-prevent
-        className="fixed z-95 flex flex-col overflow-hidden bg-paper text-ink"
-        style={{ ...geometry, transition }}
+        className="fixed z-95 flex flex-col overflow-hidden text-ink"
+        style={{
+          ...geometry,
+          transition,
+          background: paperToned ? color.paper : color.ink,
+        }}
       >
         <button
           ref={toggleRef}
@@ -104,12 +122,20 @@ export function Menu() {
           <span
             aria-hidden="true"
             className={BAR}
-            style={{ transform: open ? "rotate(45deg)" : "translateY(-4px)" }}
+            style={{
+              transform: open ? "rotate(45deg)" : "translateY(-4px)",
+              background: paperToned ? color.ink : color.paper,
+              transition: barTransition,
+            }}
           />
           <span
             aria-hidden="true"
             className={BAR}
-            style={{ transform: open ? "rotate(-45deg)" : "translateY(4px)" }}
+            style={{
+              transform: open ? "rotate(-45deg)" : "translateY(4px)",
+              background: paperToned ? color.ink : color.paper,
+              transition: barTransition,
+            }}
           />
         </button>
 

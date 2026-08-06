@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState, type RefObject } from "react";
-
-/** Marks a section the closed menu pill has to invert against. */
-export const DARK_PANEL_ATTR = "data-dark-panel";
+import { DARK_PANEL_ATTR } from "@/lib/design/tokens";
 
 /**
  * Reports whether `ref`'s centre point currently sits over a dark panel.
