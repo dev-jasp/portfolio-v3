@@ -1,19 +1,5 @@
-import type { ComponentType, SVGProps } from "react";
-import type { SocialLink, SocialPlatform } from "@/types";
-import { GitHubIcon, InstagramIcon, LinkedInIcon } from "./Icons";
-
-/**
- * Keyed by the platform union rather than looked up loosely, so adding a
- * platform to `SocialPlatform` fails the build until its icon exists.
- */
-const icons: Record<
-  SocialPlatform,
-  ComponentType<SVGProps<SVGSVGElement> & { size?: number }>
-> = {
-  linkedin: LinkedInIcon,
-  instagram: InstagramIcon,
-  github: GitHubIcon,
-};
+import type { SocialLink } from "@/types";
+import { socialIcons } from "./Icons";
 
 type Props = SocialLink & {
   /** 52 in the menu, 62 in the footer. */
@@ -38,7 +24,7 @@ export function IconCircle({
   iconSize = 21,
   lift = false,
 }: Props) {
-  const Icon = icons[platform];
+  const Icon = socialIcons[platform];
 
   return (
     <a

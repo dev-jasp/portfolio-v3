@@ -25,7 +25,7 @@ Two tones and one accent. Nothing else gets to be a colour.
 | --- | --- | --- |
 | `--color-ink` | `#000000` | Text, dark panels, outlined circles |
 | `--color-paper` | `#ffffff` | Page ground, text inside dark panels |
-| `--color-accent` | `#f3350c` | Nav dots, count badge, CTA dot spread |
+| `--color-accent` | `#f3350c` | Nav dots, count badge, CTA dot spread, hero process rules, social bubble hover |
 | `--color-surface` | `#efefef` | Image frame backdrop |
 | `--color-hairline` | `#c9c9c9` | Chip separators |
 | `--color-on-dark-muted` | `#d6d6d6` | Subtitle on dark panels |
@@ -140,6 +140,7 @@ components/
     StackRow.tsx             category label + separated chips    [done]
     WorkCard.tsx             media + meta, scroll-scaled    [done]
     IndentLink.tsx           accent dot + label, hover indent    [done]
+    AvatarSocials.tsx        socials pop above the hero avatar   [done]
   layout/
     Menu.tsx                 morphing pill -> panel         [partial]
     Footer.tsx               clipped sticky reveal          [done]
@@ -212,6 +213,27 @@ The cost is that the hidden state is real, so every such element also needs an
 explicit reduced-motion branch that applies the end state — otherwise it stays
 hidden for exactly the users who opted out of the animation. `data-reveal` on
 the element gives the `globals.css` rule a second shot at it.
+
+### Hover groups that reach outside their own box
+
+`AvatarSocials` pops a column of links *above* the avatar, so the thing you
+hover and the thing you reach for don't share a box. Two rules keep the group
+from closing mid-reach:
+
+- The column is a DOM **child** of the hover root. `mouseenter`/`mouseleave`
+  are defined over an element *and its descendants*, not over its box, so a
+  column positioned at `bottom-full` — entirely outside the root's box — still
+  counts as inside. `mouseover`/`mouseout` with a `relatedTarget` check would
+  be the fallback if it ever couldn't be a descendant.
+- The visual gap between trigger and column is the column's **padding**, never
+  a margin. Padding is inside the box; a margin is dead space that fires
+  `mouseleave` on the way up.
+
+Focus follows the same group: `focusout` ignores any `relatedTarget` still
+inside the root, or tabbing between the links themselves would close it. The
+links stay in the tab order while closed (they animate `opacity`, not
+`visibility`) — otherwise nothing could focus them, and nothing could open the
+group by keyboard.
 
 ### Shared values and the client boundary
 
