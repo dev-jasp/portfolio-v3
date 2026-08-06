@@ -137,6 +137,28 @@ padding, panel and stacking that fix the page's rhythm — with its content left
 to the phase that owns it. `[partial]` means it works, but part of its own
 phase is still outstanding; the file's header comment says which part.
 
+### Responsive
+
+Three hard breakpoints, each where a layout genuinely stops working rather than
+at a device size: the stack grid collapses at 900px, work cards at 1100px, and
+the marquee headline drops to a smaller clamp under 640px. Everything else is
+fluid — `clamp()` at the usage site — so there is no cascade of overrides to
+keep in sync.
+
+**Full-screen fills use `svh`, never `vh`.** On mobile `100vh` is the viewport
+with browser chrome *retracted*, so a `vh`-sized panel is taller than the screen
+it renders on. This applies to the hero panel, the stack section, the
+Collaborate panel, the footer and the open menu panel. `vh` is still correct for
+proportional sizing (`52vh` on the stack photo), where overshooting is harmless.
+
+**Touch targets are gated on `pointer: coarse`, not width.** A narrow desktop
+window keeps the tight 24px rhythm the footer is drawn around; only actual
+fingers get the 44px floor.
+
+**The hero's padding and its marquee are one value.** The marquee cancels the
+panel's inset to run edge to edge, so both read `--spacing-gutter`. Hardcoding
+either leaves the marquee inset or overhanging at every width but one.
+
 ### Entrances and the first frame
 
 `Reveal` drives opacity from React state, so its hidden state is in the

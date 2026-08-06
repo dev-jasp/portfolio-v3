@@ -12,15 +12,19 @@ import { darkPanelProps } from "@/lib/design/tokens";
  *
  * The panel is a flex column of three parts: the name block sits at the top,
  * the CTA takes the free space between, and the marquee is pinned to the
- * bottom edge. The 44px horizontal padding is load-bearing — the marquee
- * cancels it out to run edge to edge.
+ * bottom edge.
+ *
+ * The panel's horizontal padding is load-bearing — the marquee cancels it out
+ * to run edge to edge. Both read `--spacing-gutter`, so the two cannot drift
+ * apart as it narrows on small screens; hardcoding either would leave the
+ * marquee inset or overhanging at every width but one.
  */
 export function Hero() {
   return (
     <section id="top" className="p-[var(--inset-panel)]">
       <div
         {...darkPanelProps}
-        className="relative flex min-h-[calc(100vh-20px)] flex-col overflow-hidden rounded-panel bg-ink px-11 pt-[34px] pb-10 text-paper"
+        className="relative flex min-h-[calc(100svh-20px)] flex-col overflow-hidden rounded-panel bg-ink px-gutter pt-[clamp(24px,4vw,34px)] pb-[clamp(24px,4vw,40px)] text-paper"
       >
         <span aria-hidden="true" className="dot-grid" />
 
@@ -43,7 +47,9 @@ export function Hero() {
           </p>
         </Reveal>
 
-        <div className="relative grid min-h-[140px] flex-1 place-items-center">
+        {/* Floor shrinks on short screens so the CTA doesn't push the marquee
+            off the panel before the hero has even finished. */}
+        <div className="relative grid min-h-[clamp(90px,14vh,140px)] flex-1 place-items-center">
           <Reveal delayMs={reveal.stepMs}>
             <ArrowButton href={site.scheduleUrl} label="Schedule a Call" />
           </Reveal>
@@ -54,7 +60,7 @@ export function Hero() {
           delayMs={reveal.stepMs * 2}
           threshold={0}
           rootMargin="0px"
-          className="relative -ml-11 w-screen overflow-hidden"
+          className="relative -ml-gutter w-screen overflow-hidden"
         >
           <Marquee
             text={heroHeadline}

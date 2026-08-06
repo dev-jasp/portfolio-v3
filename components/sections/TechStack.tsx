@@ -91,7 +91,7 @@ export function TechStack() {
     <section
       ref={rootRef}
       id="stack"
-      className="flex min-h-screen flex-col gap-[clamp(28px,4vh,56px)] px-gutter pt-[clamp(40px,7vh,80px)] pb-[clamp(40px,6vh,70px)]"
+      className="flex min-h-svh flex-col gap-[clamp(28px,4vh,56px)] px-gutter pt-[clamp(40px,7vh,80px)] pb-[clamp(40px,6vh,70px)]"
     >
       {/*
         One paragraph, not three. The breaks are a visual composition — the

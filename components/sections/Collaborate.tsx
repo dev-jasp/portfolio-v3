@@ -23,7 +23,7 @@ export function Collaborate() {
     >
       <div
         {...darkPanelProps}
-        className="relative flex min-h-[76vh] flex-col items-center justify-center gap-[46px] overflow-hidden rounded-panel bg-ink px-10 py-20 text-paper"
+        className="relative flex min-h-[76svh] flex-col items-center justify-center gap-[clamp(28px,5vw,46px)] overflow-hidden rounded-panel bg-ink px-[clamp(20px,5vw,40px)] py-[clamp(56px,10vw,80px)] text-paper"
       >
         <span aria-hidden="true" className="dot-grid" />
 
