@@ -29,6 +29,10 @@
     sans-serif;
   --font-mono: var(--font-space-mono), ui-monospace, "SFMono-Regular", monospace;
 
+  /* The name set large, and only that. Loaded at 400 alone — never pair this
+     with a font-weight utility; the browser would synthesise the weight. */
+  --font-wordmark: var(--font-eb-garamond), Georgia, "Times New Roman", serif;
+
   /* -- Radius --------------------------------------------------------------- */
   --radius-frame: 14px; /* stack photo */
   --radius-card: 22px; /* work card media, menu cta */
@@ -126,7 +130,8 @@
    ========================================================================= */
 @layer components {
   /* -- Dot grid ------------------------------------------------------------
-     The texture that identifies a dark panel.                              */
+     Dark-panel texture. Only Collaborate carries it, and only through the
+     centre-weighted variant below.                                         */
   .dot-grid {
     position: absolute;
     inset: 0;
@@ -136,6 +141,29 @@
       transparent 1.5px
     );
     background-size: 46px 46px;
+  }
+
+  /* Centre-weighted variant. The dots hold full strength behind the panel's
+     centred content and fall away toward the edges, so the texture reads as
+     lighting the heading rather than tiling the whole panel.
+
+     A mask rather than a second gradient: the dots keep their own colour and
+     size, and only their coverage changes. The radii stop short of the panel's
+     own half-width and half-height, so the texture is gone well before the
+     edges instead of merely dimming toward them. */
+  .dot-grid--center {
+    -webkit-mask-image: radial-gradient(
+      ellipse 40% 50% at 50% 50%,
+      #000 0%,
+      #000 22%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 40% 50% at 50% 50%,
+      #000 0%,
+      #000 22%,
+      transparent 100%
+    );
   }
 
   /* -- Arrow button --------------------------------------------------------
@@ -158,6 +186,10 @@
     border-radius: 999px;
     background: var(--color-paper);
     color: var(--color-ink);
+    /* Pinned rather than inherited. The button already resolved to Space
+       Grotesk through `body`, but a primitive that can be dropped into any
+       section shouldn't take its family from whatever surrounds it. */
+    font-family: var(--font-display);
   }
   .arrow-btn__dot-slot {
     position: relative;

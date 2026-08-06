@@ -40,7 +40,37 @@ Each grey has exactly one job, so a value can't quietly drift between sections.
 | Family | Token | Role |
 | --- | --- | --- |
 | Space Grotesk | `--font-display` | Display + UI. Tight tracking (`-0.045em`) at large sizes. |
-| Space Mono | `--font-mono` | Anything that should read as *data*: role, category labels, tech lists, project stamps. |
+| Space Mono | `--font-mono` | Anything that should read as *data*: category labels, tech lists, project stamps. |
+| EB Garamond | `--font-wordmark` | Everything set at display scale. |
+
+The three families split by **role, not by size**: EB Garamond speaks, Space
+Grotesk explains, Space Mono labels. Concretely, the serif carries the hero
+name, the marquee headline, both section headings and the footer name; Space
+Grotesk carries body copy, descriptions, nav, buttons, and the hero's role line
+and process labels.
+
+The role line under the hero name is the one place that reads as a caption on
+the name rather than as data, so it takes Space Grotesk. Everything Space Mono
+still holds is a label *of* something else — a category, a stack, a stamp.
+
+> The token is still named `--font-wordmark` from when the serif was only the
+> name. It is now the display face, so the name understates it — worth renaming
+> to `--font-display`, which would mean renaming today's `--font-display`
+> (Space Grotesk) to `--font-sans`. Cheap: only `globals.css` refers to either.
+
+Loaded at **400 only**. The family offers 400–800, but everything here is set
+at one weight, so never pair it with a font-weight utility — the browser will
+synthesise the weight rather than fail visibly. Tracking also eases to about
+`-0.01em` wherever it replaces Space Grotesk, whose `-0.04em`/`-0.045em` display
+tracking is far too tight for a serif.
+
+(Sorts Mill Goudy was tried first and replaced: single weight, so any call for
+more heft could only be faked with a text stroke.)
+
+Caps in this serif run about 8.9em wide for the name against Space Grotesk's
+~7, so the name sizes off a smaller coefficient — 9vw hero, 8.5vw footer —
+holding one line down to roughly 775px and 715px. The design's own 10.6vw would
+break it in two below about 1720px.
 
 Display sizes are fluid rather than stepped — `clamp()` throughout, so the type
 scale is continuous and set at the usage site.
@@ -77,7 +107,12 @@ Only patterns needing pseudo-elements, JS-queried hooks, or state that
 utilities can't express live in `@layer components`. Everything else is
 Tailwind utilities at the usage site.
 
-- `.dot-grid` — the texture that identifies a dark panel.
+- `.dot-grid` — dark-panel texture. Never used on its own any more.
+- `.dot-grid--center` — masks that texture to a centre pool that falls away
+  before the edges. Collaborate is the only panel that carries it, and its
+  content is centred, so the pool sits behind the heading. The hero dropped the
+  texture altogether: its process rules already cross that middle ground, and
+  dots behind them read as noise rather than as ground.
 - `.arrow-btn` (+ `__pill`, `__dot-slot`, `__dot`, `__label`, `__arrow-slot`) —
   structure only; every animated property belongs to GSAP.
 - `.indent-link` — accent dot + label, 14px hover indent.
@@ -110,7 +145,7 @@ components/
     Footer.tsx               clipped sticky reveal          [done]
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
-    Hero.tsx                 name, role, CTA, marquee       [done]
+    Hero.tsx                 name, role, process row, marquee    [done]
     TechStack.tsx            intro, layout, reveals         [done]
     SelectedWork.tsx         heading, badge, cards, archive [done]
     Collaborate.tsx          closing panel + CTA            [done]
@@ -158,6 +193,12 @@ fingers get the 44px floor.
 **The hero's padding and its marquee are one value.** The marquee cancels the
 panel's inset to run edge to edge, so both read `--spacing-gutter`. Hardcoding
 either leaves the marquee inset or overhanging at every width but one.
+
+**The hero's process row wraps on content, not at a width.** The stage track
+holds a 240px floor and the CTA pair is only as wide as the button plus the
+avatar, so the two drop onto separate lines at exactly the width where they
+stop fitting on one — no fourth breakpoint, and nothing to re-tune when the
+button's label or the stage names change.
 
 ### Entrances and the first frame
 

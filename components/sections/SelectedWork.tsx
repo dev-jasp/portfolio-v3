@@ -12,8 +12,12 @@ import { projects } from "@/lib/data";
  * of the line box, which is a descender's depth below the baseline. Expressed
  * in the badge's own `em` — a tenth of the heading's — so it holds all the way
  * down the heading's `clamp()`.
+ *
+ * This figure is tied to the heading's font: it is the descent of EB Garamond,
+ * not a universal offset. It was 1em when the heading was Space Grotesk. Change
+ * the family and this has to be re-measured.
  */
-const BADGE_LIFT = "1em";
+const BADGE_LIFT = "0.85em";
 
 /**
  * Selected work — heading, a column of cards, then the archive link.
@@ -30,7 +34,10 @@ export function SelectedWork() {
     <section id="work">
       <div className="flex flex-wrap items-start justify-between gap-10 px-gutter py-[clamp(28px,5vw,40px)]">
         <Reveal>
-          <h2 className="text-[clamp(46px,7vw,120px)] leading-[0.88] font-medium tracking-[-0.045em]">
+          {/* No weight utility — the wordmark family is loaded at 400 only, so
+              asking for 500 would make the browser synthesise it. Tracking
+              eases off -0.045em, which was set for Space Grotesk. */}
+          <h2 className="font-wordmark text-[clamp(46px,7vw,120px)] leading-[0.88] tracking-[-0.01em]">
             Selected
             <br />
             <span className="inline-flex items-end">

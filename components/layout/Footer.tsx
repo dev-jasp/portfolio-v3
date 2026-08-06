@@ -55,7 +55,7 @@ export function Footer() {
         <div className="mt-auto flex items-end justify-between gap-6">
           <span
             aria-hidden="true"
-            className="min-w-0 flex-auto text-[clamp(38px,10.4vw,200px)] leading-[0.82] font-medium tracking-[-0.045em]"
+            className="min-w-0 flex-auto font-wordmark text-[clamp(38px,8.5vw,200px)] leading-[0.82] tracking-[-0.01em] uppercase"
           >
             {site.name}
           </span>
