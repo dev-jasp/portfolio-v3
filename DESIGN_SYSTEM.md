@@ -90,8 +90,8 @@ Tailwind utilities at the usage site.
 ```
 app/
   globals.css              tokens, base, component classes  [done]
-  layout.tsx               fonts, metadata, menu mount      [todo]
-  page.tsx                 section composition              [todo]
+  layout.tsx               fonts, metadata, Lenis mount     [done]
+  page.tsx                 section composition              [done]
 
 components/
   ui/                      design-system primitives         [todo]
@@ -105,11 +105,11 @@ components/
     Reveal.tsx               IntersectionObserver entrance wrapper
     StackRow.tsx             category label + separated chips
     WorkCard.tsx             media + meta, scroll-scaled
-  layout/                                                   [todo]
-    Menu.tsx                 morphing pill -> panel
-    Footer.tsx               clipped sticky reveal
-    SmoothScroll.tsx         Lenis mount
-  sections/                                                 [todo]
+  layout/
+    Menu.tsx                 morphing pill -> panel         [todo]
+    Footer.tsx               clipped sticky reveal          [shell]
+    SmoothScroll.tsx         Lenis mount                    [done]
+  sections/                                                 [shell]
     Hero.tsx  TechStack.tsx  SelectedWork.tsx  Collaborate.tsx
 
 hooks/                                                      [done]
@@ -126,8 +126,25 @@ lib/                                                        [done]
   design/motion.ts         ease + duration scales
 
 types/index.ts                                              [done]
-public/images/jaspher.jpeg                                  [done]
+public/images/jaspher-gargar.png                            [done]
 ```
+
+`[shell]` means the file exists and carries its structural container — the
+padding, panel and stacking that fix the page's rhythm — with its content left
+to the phase that owns it.
+
+### Page-level stacking
+
+The footer is `position: fixed` and revealed by scroll, which puts three rules
+on the page composition:
+
+1. `Collaborate` is opaque and `z-2`; the footer's wrapper is `z-1`. The panel
+   is the lid over the footer.
+2. The footer's wrapper clips with `clip-path`, not `overflow` — `overflow` on
+   an ancestor does not clip a fixed descendant.
+3. Nothing between `<body>` and those two may create a stacking context or a
+   containing block (a `transform`, `filter`, or `contain`), or the footer
+   stops being positioned against the viewport.
 
 ---
 
