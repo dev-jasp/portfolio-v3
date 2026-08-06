@@ -101,10 +101,10 @@ components/
     Marquee.tsx              RAF ticker, scroll-reactive    [done]
     Reveal.tsx               IntersectionObserver entrance  [done]
     DarkPanel.tsx            black rounded panel + dot grid [todo]
-    ImageSlot.tsx            replaces the design's <image-slot>  [todo]
-    IndentLink.tsx           accent dot + label, hover indent    [todo]
+    ImageSlot.tsx            replaces the design's <image-slot>  [done]
     StackRow.tsx             category label + separated chips    [done]
-    WorkCard.tsx             media + meta, scroll-scaled    [todo]
+    WorkCard.tsx             media + meta, scroll-scaled    [done]
+    IndentLink.tsx           accent dot + label, hover indent    [todo]
   layout/
     Menu.tsx                 morphing pill -> panel         [partial]
     Footer.tsx               clipped sticky reveal          [shell]
@@ -112,7 +112,8 @@ components/
   sections/
     Hero.tsx                 name, role, CTA, marquee       [done]
     TechStack.tsx            intro, layout, reveals         [done]
-    SelectedWork.tsx  Collaborate.tsx                       [shell]
+    SelectedWork.tsx         heading, badge, cards, archive [done]
+    Collaborate.tsx                                         [shell]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
