@@ -19,9 +19,9 @@ export const site = {
 } as const;
 
 export const socials: SocialLink[] = [
-  { platform: "linkedin", label: "LinkedIn", href: "https://linkedin.com" },
+  { platform: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/dev-jasp/" },
   { platform: "instagram", label: "Instagram", href: "https://instagram.com" },
-  { platform: "github", label: "GitHub", href: "https://github.com" },
+  { platform: "github", label: "GitHub", href: "https://github.com/dev-jasp" },
 ];
 
 /** Full nav, used by the menu panel. */
