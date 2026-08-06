@@ -94,23 +94,24 @@ app/
   page.tsx                 section composition              [done]
 
 components/
-  ui/                      design-system primitives         [todo]
-    ArrowButton.tsx          CTA pill, dot-spread hover
-    DarkPanel.tsx            black rounded panel + dot grid
-    IconCircle.tsx           outlined social circle
-    Icons.tsx                LinkedIn / Instagram / GitHub / arrow / copyright
-    ImageSlot.tsx            replaces the design's <image-slot>
-    IndentLink.tsx           accent dot + label, hover indent
-    Marquee.tsx              RAF ticker, scroll-reactive direction
-    Reveal.tsx               IntersectionObserver entrance wrapper
-    StackRow.tsx             category label + separated chips
-    WorkCard.tsx             media + meta, scroll-scaled
+  ui/                      design-system primitives
+    ArrowButton.tsx          CTA pill, dot-spread hover     [done]
+    Icons.tsx                arrow                          [partial]
+    Marquee.tsx              RAF ticker, scroll-reactive    [done]
+    Reveal.tsx               IntersectionObserver entrance  [done]
+    DarkPanel.tsx            black rounded panel + dot grid [todo]
+    IconCircle.tsx           outlined social circle         [todo]
+    ImageSlot.tsx            replaces the design's <image-slot>  [todo]
+    IndentLink.tsx           accent dot + label, hover indent    [todo]
+    StackRow.tsx             category label + separated chips    [todo]
+    WorkCard.tsx             media + meta, scroll-scaled    [todo]
   layout/
     Menu.tsx                 morphing pill -> panel         [todo]
     Footer.tsx               clipped sticky reveal          [shell]
     SmoothScroll.tsx         Lenis mount                    [done]
-  sections/                                                 [shell]
-    Hero.tsx  TechStack.tsx  SelectedWork.tsx  Collaborate.tsx
+  sections/
+    Hero.tsx                 name, role, CTA, marquee       [done]
+    TechStack.tsx  SelectedWork.tsx  Collaborate.tsx        [shell]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
@@ -155,6 +156,13 @@ Three things in the design source were deliberately **not** carried over:
 1. **The 700ms reveal fallback.** The source forces every `[data-reveal]`
    visible 700ms after mount as a safety net, which cancels the entrance for
    anything below the fold. `useInView` relies on IntersectionObserver alone.
+
+   Dropping it exposed a case the fallback had been hiding: the default
+   `rootMargin` of `0px 0px -8%` means an element pinned to the bottom edge of
+   a full-height panel can never reach the 15% threshold without scrolling, so
+   it would never reveal. The hero marquee is exactly that, and passes
+   `threshold={0}` / `rootMargin="0px"` to opt out. Any future reveal sitting
+   at the foot of a `100vh` section needs the same.
 2. **`_equalizeStackRows`.** It queries `[data-stacklabel]`, which does not
    exist in the markup — dead code. The row grid already equalises heights via
    `grid-template-rows: repeat(4, minmax(min-content, 1fr))`.
