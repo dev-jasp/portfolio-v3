@@ -90,27 +90,28 @@ Tailwind utilities at the usage site.
 ```
 app/
   globals.css              tokens, base, component classes  [done]
-  layout.tsx               fonts, metadata, menu mount      [todo]
-  page.tsx                 section composition              [todo]
+  layout.tsx               fonts, metadata, Lenis mount     [done]
+  page.tsx                 section composition              [done]
 
 components/
-  ui/                      design-system primitives         [todo]
-    ArrowButton.tsx          CTA pill, dot-spread hover
-    DarkPanel.tsx            black rounded panel + dot grid
-    IconCircle.tsx           outlined social circle
-    Icons.tsx                LinkedIn / Instagram / GitHub / arrow / copyright
-    ImageSlot.tsx            replaces the design's <image-slot>
-    IndentLink.tsx           accent dot + label, hover indent
-    Marquee.tsx              RAF ticker, scroll-reactive direction
-    Reveal.tsx               IntersectionObserver entrance wrapper
-    StackRow.tsx             category label + separated chips
-    WorkCard.tsx             media + meta, scroll-scaled
-  layout/                                                   [todo]
-    Menu.tsx                 morphing pill -> panel
-    Footer.tsx               clipped sticky reveal
-    SmoothScroll.tsx         Lenis mount
-  sections/                                                 [todo]
-    Hero.tsx  TechStack.tsx  SelectedWork.tsx  Collaborate.tsx
+  ui/                      design-system primitives
+    ArrowButton.tsx          CTA pill, dot-spread hover     [done]
+    Icons.tsx                arrow                          [partial]
+    Marquee.tsx              RAF ticker, scroll-reactive    [done]
+    Reveal.tsx               IntersectionObserver entrance  [done]
+    DarkPanel.tsx            black rounded panel + dot grid [todo]
+    IconCircle.tsx           outlined social circle         [todo]
+    ImageSlot.tsx            replaces the design's <image-slot>  [todo]
+    IndentLink.tsx           accent dot + label, hover indent    [todo]
+    StackRow.tsx             category label + separated chips    [todo]
+    WorkCard.tsx             media + meta, scroll-scaled    [todo]
+  layout/
+    Menu.tsx                 morphing pill -> panel         [partial]
+    Footer.tsx               clipped sticky reveal          [shell]
+    SmoothScroll.tsx         Lenis mount                    [done]
+  sections/
+    Hero.tsx                 name, role, CTA, marquee       [done]
+    TechStack.tsx  SelectedWork.tsx  Collaborate.tsx        [shell]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
@@ -126,8 +127,34 @@ lib/                                                        [done]
   design/motion.ts         ease + duration scales
 
 types/index.ts                                              [done]
-public/images/jaspher.jpeg                                  [done]
+public/images/jaspher-gargar.png                            [done]
 ```
+
+`[shell]` means the file exists and carries its structural container — the
+padding, panel and stacking that fix the page's rhythm — with its content left
+to the phase that owns it. `[partial]` means it works, but part of its own
+phase is still outstanding; the file's header comment says which part.
+
+### Scroll locking
+
+Lenis reads wheel and touch events rather than the scrollbar, so
+`body { overflow: hidden }` does **not** stop it. Anything that covers the
+viewport needs `data-lenis-prevent` as well — `globals.css` already carries the
+matching rule. `Menu` sets both: the attribute for the Lenis path, `overflow`
+for the reduced-motion path where Lenis never mounts.
+
+### Page-level stacking
+
+The footer is `position: fixed` and revealed by scroll, which puts three rules
+on the page composition:
+
+1. `Collaborate` is opaque and `z-2`; the footer's wrapper is `z-1`. The panel
+   is the lid over the footer.
+2. The footer's wrapper clips with `clip-path`, not `overflow` — `overflow` on
+   an ancestor does not clip a fixed descendant.
+3. Nothing between `<body>` and those two may create a stacking context or a
+   containing block (a `transform`, `filter`, or `contain`), or the footer
+   stops being positioned against the viewport.
 
 ---
 
@@ -138,6 +165,13 @@ Three things in the design source were deliberately **not** carried over:
 1. **The 700ms reveal fallback.** The source forces every `[data-reveal]`
    visible 700ms after mount as a safety net, which cancels the entrance for
    anything below the fold. `useInView` relies on IntersectionObserver alone.
+
+   Dropping it exposed a case the fallback had been hiding: the default
+   `rootMargin` of `0px 0px -8%` means an element pinned to the bottom edge of
+   a full-height panel can never reach the 15% threshold without scrolling, so
+   it would never reveal. The hero marquee is exactly that, and passes
+   `threshold={0}` / `rootMargin="0px"` to opt out. Any future reveal sitting
+   at the foot of a `100vh` section needs the same.
 2. **`_equalizeStackRows`.** It queries `[data-stacklabel]`, which does not
    exist in the markup — dead code. The row grid already equalises heights via
    `grid-template-rows: repeat(4, minmax(min-content, 1fr))`.
