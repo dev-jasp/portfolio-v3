@@ -25,7 +25,7 @@ export function Footer() {
     <div className="relative z-1 h-[min(700px,100svh)] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]">
       <footer className="fixed inset-x-0 bottom-0 flex h-[min(700px,100svh)] flex-col bg-paper px-gutter pt-[clamp(32px,6vw,56px)] pb-[30px]">
         <div className="flex flex-wrap items-start justify-between gap-10">
-          {/* Contact is omitted — the Collaborate panel directly above is it. */}
+          {/* Collab is omitted — the Collaborate panel directly above is it. */}
           <nav className="flex flex-col gap-[3px] text-2xl">
             {footerLinks.map((link) => (
               <IndentLink key={link.href} href={link.href} label={link.label} />

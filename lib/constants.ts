@@ -27,12 +27,12 @@ export const socials: SocialLink[] = [
 /** Full nav, used by the menu panel. */
 export const navLinks: NavLink[] = [
   { label: "Home", href: "#top" },
-  { label: "Tech Stack", href: "#stack" },
+  { label: "About", href: "#stack" },
   { label: "Selected Work", href: "#work" },
-  { label: "Contact", href: "#contact" },
+  { label: "Collab", href: "#contact" },
 ];
 
-/** The footer repeats the nav minus Contact — the CTA above it already covers that. */
+/** The footer repeats the nav minus Collab — the CTA above it already covers that. */
 export const footerLinks: NavLink[] = navLinks.filter(
   (link) => link.href !== "#contact",
 );
