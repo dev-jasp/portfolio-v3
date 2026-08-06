@@ -70,6 +70,13 @@
 
   html {
     scroll-behavior: smooth;
+
+    /* The menu locks scroll with `overflow: hidden` on the body, which removes
+       the scrollbar and hands its width back to the layout — the whole page
+       jumps right as the panel opens. Reserving the gutter permanently means
+       the lock costs no width, so nothing moves. No-op where the platform
+       already draws overlay scrollbars. */
+    scrollbar-gutter: stable;
   }
 
   /* Lenis drives scrolling itself; native smooth scroll fights it. */
