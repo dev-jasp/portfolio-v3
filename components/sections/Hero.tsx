@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Fragment } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
+import { AvatarSocials } from "@/components/ui/AvatarSocials";
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal } from "@/components/ui/Reveal";
 import { site } from "@/lib/constants";
@@ -87,16 +88,20 @@ export function Hero() {
 
               <div className="flex items-center gap-[clamp(14px,1.8vw,28px)]">
                 <ArrowButton href={site.scheduleUrl} label="Schedule a Call" />
-                {/* Decorative: the name it belongs to is already read out
-                    directly above it. */}
-                <Image
-                  src="/images/jaspher.jpeg"
-                  alt=""
-                  width={1254}
-                  height={1254}
-                  priority
-                  className="size-[clamp(64px,7.5vw,120px)] shrink-0 rounded-full object-cover object-[50%_30%] grayscale"
-                />
+                {/* The avatar stays server-rendered — it is passed through the
+                    client wrapper as children rather than owned by it. */}
+                <AvatarSocials>
+                  {/* Decorative: the name it belongs to is already read out
+                      directly above it. */}
+                  <Image
+                    src="/images/jaspher.jpeg"
+                    alt=""
+                    width={1254}
+                    height={1254}
+                    priority
+                    className="size-[clamp(64px,7.5vw,120px)] shrink-0 rounded-full object-cover object-[50%_30%] grayscale"
+                  />
+                </AvatarSocials>
               </div>
             </div>
           </Reveal>

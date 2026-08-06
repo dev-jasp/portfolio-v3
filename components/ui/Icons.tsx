@@ -1,4 +1,5 @@
-import type { ReactNode, SVGProps } from "react";
+import type { ComponentType, ReactNode, SVGProps } from "react";
+import type { SocialPlatform } from "@/types";
 
 type GlyphProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -81,3 +82,17 @@ export function GitHubIcon(props: IconProps) {
     </Glyph>
   );
 }
+
+/**
+ * Keyed by the platform union rather than looked up loosely, so adding a
+ * platform to `SocialPlatform` fails the build until its icon exists.
+ *
+ * Lives here rather than beside either consumer: both `IconCircle` and
+ * `AvatarSocials` draw the same three glyphs, and two copies of the map would
+ * let one of them fall a platform behind without anything failing.
+ */
+export const socialIcons: Record<SocialPlatform, ComponentType<IconProps>> = {
+  linkedin: LinkedInIcon,
+  instagram: InstagramIcon,
+  github: GitHubIcon,
+};
