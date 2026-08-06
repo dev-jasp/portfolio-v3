@@ -96,11 +96,11 @@ app/
 components/
   ui/                      design-system primitives
     ArrowButton.tsx          CTA pill, dot-spread hover     [done]
-    Icons.tsx                arrow                          [partial]
+    Icons.tsx                arrow + LinkedIn/Instagram/GitHub  [done]
+    IconCircle.tsx           outlined social circle         [done]
     Marquee.tsx              RAF ticker, scroll-reactive    [done]
     Reveal.tsx               IntersectionObserver entrance  [done]
     DarkPanel.tsx            black rounded panel + dot grid [todo]
-    IconCircle.tsx           outlined social circle         [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [todo]
     IndentLink.tsx           accent dot + label, hover indent    [todo]
     StackRow.tsx             category label + separated chips    [todo]
@@ -134,6 +134,17 @@ public/images/jaspher-gargar.png                            [done]
 padding, panel and stacking that fix the page's rhythm — with its content left
 to the phase that owns it. `[partial]` means it works, but part of its own
 phase is still outstanding; the file's header comment says which part.
+
+### Shared values and the client boundary
+
+`DARK_PANEL_ATTR` / `darkPanelProps` live in `lib/design/tokens.ts`, not beside
+the `usePanelTone` hook that consumes them. A plain value exported from a
+`"use client"` module becomes a client reference, so a server component that
+imports it receives something that is not the object — here the attribute
+simply never rendered, and the pill never inverted, with no error anywhere.
+
+Any constant shared between a client hook and server-rendered markup belongs in
+a module with no `"use client"` directive.
 
 ### Scroll locking
 

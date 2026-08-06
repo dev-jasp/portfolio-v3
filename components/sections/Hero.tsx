@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { site } from "@/lib/constants";
 import { heroHeadline } from "@/lib/data";
 import { reveal } from "@/lib/design/motion";
+import { darkPanelProps } from "@/lib/design/tokens";
 
 /**
  * Hero — a full-viewport dark panel inset by the 10px white frame.
@@ -18,7 +19,7 @@ export function Hero() {
   return (
     <section id="top" className="p-[var(--inset-panel)]">
       <div
-        data-darkpanel
+        {...darkPanelProps}
         className="relative flex min-h-[calc(100vh-20px)] flex-col overflow-hidden rounded-panel bg-ink px-11 pt-[34px] pb-10 text-paper"
       >
         <span aria-hidden="true" className="dot-grid" />

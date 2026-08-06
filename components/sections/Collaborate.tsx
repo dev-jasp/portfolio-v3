@@ -1,3 +1,5 @@
+import { darkPanelProps } from "@/lib/design/tokens";
+
 /**
  * Collaborate — the closing dark panel, and the lid over the footer.
  *
@@ -14,7 +16,7 @@ export function Collaborate() {
       className="relative z-2 bg-paper px-[var(--inset-panel)] pb-[var(--inset-panel)]"
     >
       <div
-        data-darkpanel
+        {...darkPanelProps}
         className="relative flex min-h-[76vh] flex-col items-center justify-center gap-[46px] overflow-hidden rounded-panel bg-ink px-10 py-20 text-paper"
       >
         <span aria-hidden="true" className="dot-grid" />
