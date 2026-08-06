@@ -25,10 +25,12 @@ export function Collaborate() {
         {...darkPanelProps}
         className="relative flex min-h-[76svh] flex-col items-center justify-center gap-[clamp(28px,5vw,46px)] overflow-hidden rounded-panel bg-ink px-[clamp(20px,5vw,40px)] py-[clamp(56px,10vw,80px)] text-paper"
       >
-        <span aria-hidden="true" className="dot-grid" />
+        <span aria-hidden="true" className="dot-grid dot-grid--center" />
 
         <Reveal className="relative">
-          <h2 className="text-center text-[clamp(40px,6.4vw,92px)] font-medium tracking-[-0.04em]">
+          {/* No weight utility — the family is loaded at 400 only. Tracking
+              eases off -0.04em, which was set for Space Grotesk. */}
+          <h2 className="font-wordmark text-center text-[clamp(40px,6.4vw,92px)] tracking-[-0.01em]">
             Collaborate with Me
           </h2>
         </Reveal>

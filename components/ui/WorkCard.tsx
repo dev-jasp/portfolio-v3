@@ -53,7 +53,12 @@ export function WorkCard({ project }: { project: Project }) {
         */}
         {stack.length > 0 && (
           <div className="flex flex-col gap-[26px]">
-            <h4 className="text-2xl text-muted uppercase">Tech stack used</h4>
+            {/* Mono, like the stack section's row labels — this is the same
+                pattern, a category label introducing a tech list, and the two
+                were set in different families. */}
+            <h4 className="font-mono text-lg tracking-[0.02em] text-muted uppercase">
+              Tech stack used
+            </h4>
             {/* 18px keeps the chips near the stack section's own scale at a
                 column of this width, rather than shrinking against the 24px
                 label and description that bracket them. */}

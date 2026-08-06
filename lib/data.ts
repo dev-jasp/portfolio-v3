@@ -56,3 +56,9 @@ export const stackIntroLines = [
 ];
 
 export const heroHeadline = "I build tools people actually have to use —";
+
+/**
+ * The hero's process track. Rendered in order with a connector rule between
+ * each pair, so adding a stage adds a segment — order is the whole meaning.
+ */
+export const heroProcess = ["Concept", "Motion", "Code"];
