@@ -121,14 +121,11 @@ export function Hero() {
         is the only focusable thing on this line, so there is no tab order to
         get out of step with what is on screen.
       */}
-      <div className="flex flex-wrap items-center justify-between gap-x-[clamp(20px,3vw,64px)] gap-y-9 max-[900px]:flex-col-reverse max-[900px]:gap-y-[clamp(32px,6.5vw,60px)]">
-        {/* `min-w-0` is what lets the name break rather than overhang. A flex
-            item sizes to max-content by default, and "JASPHER GARGAR" set at
-            the clamp's 44px floor is wider than a 320px screen has room for —
-            without this it would simply run off the page, since there is no
-            panel clipping it any more. With it, the name drops to two lines at
-            the width where one stops fitting, which is the last thing left in
-            this section that has to reflow. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-[clamp(20px,3vw,64px)] gap-y-9 [container-type:inline-size] max-[900px]:flex-col-reverse max-[900px]:gap-y-[clamp(32px,6.5vw,60px)]">
+        {/* `min-w-0` lets this shrink to whatever the row leaves it, rather
+            than holding its max-content width and overhanging the page — there
+            is no panel clipping it any more. The name itself never has to give:
+            it is sized to fit on both sides of the breakpoint. */}
         <Reveal delayMs={reveal.stepMs * 3} className="min-w-0">
           {/* The page's only h1 — it used to belong to the marquee. Caps in a
               serif run far wider than the mixed-case sans the display scale's
@@ -138,14 +135,19 @@ export function Hero() {
               down to ~950px. Tracking eases off -0.045em for the same reason
               the coefficient does. No weight utility: the wordmark family ships
               at 400 only. */}
-          {/* Below 900px it has the line to itself, so it takes far more of the
-              width than it can when the pair is beside it — 10.6vw against 8,
-              which lands it just inside the two gutters at every phone width
-              and is what stops it reading as a caption under its own portrait.
-              Centred there because the block is: at the widths where it does
-              break to two lines, ragged-left under a centred column is the one
-              arrangement that looks like an accident. */}
-          <h1 className="font-wordmark text-[clamp(44px,8vw,200px)] leading-[0.84] tracking-[-0.01em] uppercase max-[900px]:text-center max-[900px]:text-[clamp(34px,10.6vw,120px)]">
+          {/* One line at every width, both sides of the breakpoint.
+
+              Above 900px the pair is beside it, so 8vw — which renders at ~68%
+              of the viewport against the ~94% the gutters leave, comfortably
+              inside. Below, it has the line to itself and is measured to that
+              line instead: the name runs exactly 8.4641x its own font size in
+              this face, so dividing the row's width by 9.2 fills ~92% of it and
+              can't do anything else. `whitespace-nowrap` is what makes that a
+              guarantee rather than a calculation that happens to work.
+
+              `cqw` because the page reserves a scrollbar gutter permanently, so
+              `100vw` measures a width nothing can actually occupy. */}
+          <h1 className="font-wordmark text-[clamp(44px,8vw,200px)] leading-[0.84] tracking-[-0.01em] whitespace-nowrap uppercase max-[900px]:text-center max-[900px]:text-[calc(100cqw/9.2)]">
             {site.name}
           </h1>
         </Reveal>
