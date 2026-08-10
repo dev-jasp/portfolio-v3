@@ -28,5 +28,6 @@ export type Project = {
   image?: string;
   /** Shown inside the empty slot. */
   imagePlaceholder?: string;
+  /** Where "View case study" points. Falls back to the work section. */
   href?: string;
 };
