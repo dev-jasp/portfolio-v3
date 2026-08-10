@@ -318,10 +318,19 @@ export function Collaborate() {
               <p className="text-center font-wordmark text-[clamp(28px,3.6vw,54px)] leading-[1.05] tracking-[-0.01em]">
                 {collabPitch}
               </p>
+              {/* `sm`, down from `lg`. The scale is fixed pixels but the line
+                  above it is not, so the button has to answer the smallest type
+                  it will ever sit under, not the largest: `lg` stood 74px tall
+                  against a pitch that is 54px on a desktop and 28px on a phone,
+                  where it outweighed the sentence it exists to answer by 2.6x.
+                  `sm` is the only step that reads right at both ends — just
+                  under the line on a desktop, and the least top-heavy on a
+                  phone — and it is the size every other button on the site
+                  already uses. */}
               <ArrowButton
                 href={`mailto:${site.email}`}
                 label="Get in Touch"
-                size="lg"
+                size="sm"
               />
             </div>
           </div>
