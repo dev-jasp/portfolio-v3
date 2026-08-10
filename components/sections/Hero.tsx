@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Fragment } from "react";
+import { AccentRule } from "@/components/ui/AccentRule";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { AvatarSocials } from "@/components/ui/AvatarSocials";
 import { Marquee } from "@/components/ui/Marquee";
@@ -69,18 +70,10 @@ export function Hero() {
                     <span className="shrink-0 text-[clamp(14px,1.2vw,20px)]">
                       {stage}
                     </span>
-                    {/* Connector: accent dot, hairline, accent dot. The rule
-                        takes all the slack in the row, so the stages spread
-                        to whatever width the panel gives them. */}
+                    {/* The rule takes all the slack in the row, so the stages
+                        spread to whatever width the panel gives them. */}
                     {index < heroProcess.length - 1 && (
-                      <span
-                        aria-hidden="true"
-                        className="flex min-w-[26px] flex-1 items-center"
-                      >
-                        <span className="size-[6px] flex-none rounded-full bg-accent" />
-                        <span className="h-px flex-1 bg-accent/50" />
-                        <span className="size-[6px] flex-none rounded-full bg-accent" />
-                      </span>
+                      <AccentRule className="min-w-[26px] flex-1" />
                     )}
                   </Fragment>
                 ))}

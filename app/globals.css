@@ -191,6 +191,14 @@
        section shouldn't take its family from whatever surrounds it. */
     font-family: var(--font-display);
   }
+  /* On the paper background the resting pill inverts, so the button carries
+     the same weight against the page that the default one does on a dark
+     panel. The hover is unchanged: the accent covers either pill, and its
+     label is paper both times. */
+  .arrow-btn__pill--ink {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
   .arrow-btn__dot-slot {
     position: relative;
     flex: none;
@@ -202,12 +210,17 @@
     background: var(--color-accent);
     will-change: transform;
   }
+  /* Above the dot rather than merely after it in the markup: two positioned
+     elements with no `z-index` stack in DOM order, and the dot is meant to
+     spread behind the label whatever order the two are written in. */
   .arrow-btn__label {
     position: relative;
+    z-index: 1;
     white-space: nowrap;
   }
   .arrow-btn__arrow-slot {
     position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     overflow: hidden;

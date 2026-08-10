@@ -137,6 +137,7 @@ components/
     Reveal.tsx               IntersectionObserver entrance  [done]
     DarkPanel.tsx            black rounded panel + dot grid [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [done]
+    AccentRule.tsx           accent dot, hairline, accent dot    [done]
     StackRow.tsx             category label + separated chips    [done]
     WorkCard.tsx             media + meta, scroll-scaled    [done]
     IndentLink.tsx           accent dot + label, hover indent    [done]
@@ -180,6 +181,12 @@ at a device size: the stack grid collapses at 900px, work cards at 1100px, and
 the marquee headline drops to a smaller clamp under 640px. Everything else is
 fluid — `clamp()` at the usage site — so there is no cascade of overrides to
 keep in sync.
+
+One layout asks its *column* rather than the viewport: `StackRow` stacks its
+label above its chips under a 480px column, because the two stop agreeing the
+moment the stack grid collapses — the same 1000px viewport gives the row a
+480px column in two columns and a 940px one in one. It is a container query for
+that reason, and it is the only one in the page.
 
 **Full-screen fills use `svh`, never `vh`.** On mobile `100vh` is the viewport
 with browser chrome *retracted*, so a `vh`-sized panel is taller than the screen
@@ -287,11 +294,10 @@ Three things in the design source were deliberately **not** carried over:
    exist in the markup — dead code. The row grid already equalises heights via
    `grid-template-rows: repeat(4, minmax(min-content, 1fr))`.
 
-   Its neighbour `_trimBars` is broken in a similar way and was reimplemented
-   rather than copied. It walks `row.children` — which is `[label, chipList]`,
-   the two grid cells, not the chips — so `querySelector('[data-bar]')` only
-   ever reaches the first separator in a row, and the line-start comparison
-   runs against the label's offset. `StackRow` walks the chips themselves.
+   Its neighbour `_trimBars` hides the separator on any chip that wraps to the
+   start of a new line, and was dropped rather than copied: the chips are one
+   line at every width now — the row shrinks its type to fit instead of
+   wrapping — so no chip can ever start a line. Nothing to trim.
 3. **`[data-arrowbtn-old]`.** A superseded hover treatment left in the file.
 
 One fix applied: the CTA's dot-cover scale is measured from the *dot slot*

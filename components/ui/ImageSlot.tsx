@@ -25,7 +25,19 @@ export function ImageSlot({ src, alt, placeholder, sizes }: Props) {
     );
   }
 
+  /*
+    These are screenshots of dense UI, not photographs. The default WebP
+    quality of 75 is tuned for photos and visibly smears small label text and
+    thin chart rules; 90 holds them. Allowlisted in `next.config.ts`.
+  */
   return (
-    <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" />
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      quality={90}
+      className="object-cover"
+    />
   );
 }
