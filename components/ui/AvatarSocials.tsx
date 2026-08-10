@@ -129,7 +129,11 @@ export function AvatarSocials({ children }: { children: ReactNode }) {
                 aria-label={social.label}
                 target="_blank"
                 rel="noreferrer"
-                className="grid size-[clamp(44px,4vw,60px)] place-items-center rounded-full bg-paper text-ink transition-colors duration-[var(--duration-tone)] hover:bg-accent hover:text-paper hover:opacity-100"
+                // Ink, not paper: these used to pop out over the hero's black
+                // panel and now open over the bare page, where a paper bubble
+                // is an invisible one. The accent hover is unchanged — it read
+                // against both.
+                className="grid size-[clamp(44px,4vw,60px)] place-items-center rounded-full bg-ink text-paper transition-colors duration-[var(--duration-tone)] hover:bg-accent hover:text-paper hover:opacity-100"
               >
                 <Icon size={21} />
               </a>

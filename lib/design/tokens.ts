@@ -76,9 +76,3 @@ export const DARK_PANEL_ATTR = "data-dark-panel";
  * fails silently, as a pill that simply never inverts.
  */
 export const darkPanelProps: Record<string, string> = { [DARK_PANEL_ATTR]: "" };
-
-/** Hero marquee: per-frame drift and the maximum scroll-driven offset. */
-export const marquee = {
-  speed: 0.03,
-  maxShift: 220,
-} as const;

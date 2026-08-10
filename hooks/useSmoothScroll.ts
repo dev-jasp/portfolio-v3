@@ -8,8 +8,8 @@ import { useReducedMotion } from "./useReducedMotion";
  * Mounts Lenis and hands anchor navigation over to it.
  *
  * Lenis scrolls the document natively (it writes `scrollTop`), so plain
- * `scroll` listeners — the marquee, the work-card scaling, the menu tone
- * probe — keep firing without any bridging.
+ * `scroll` listeners — the work-card scaling, the menu tone probe — keep firing
+ * without any bridging.
  *
  * Skipped entirely under reduced motion, which leaves native scrolling and
  * the CSS `scroll-behavior: auto` fallback in charge.

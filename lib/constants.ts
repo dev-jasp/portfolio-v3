@@ -41,3 +41,15 @@ export const navLinks: NavLink[] = [
 export const footerLinks: NavLink[] = navLinks.filter(
   (link) => link.href !== "/#contact",
 );
+
+/**
+ * The hero's inline nav. Deliberately not a slice of `navLinks`: it is three of
+ * those four destinations under shorter labels, because it is read at a glance
+ * across the top of the page rather than down an open panel. Collab is left to
+ * the menu — the hero already ends in a call to action.
+ */
+export const heroNavLinks: NavLink[] = [
+  { label: "Home", href: "/#top" },
+  { label: "About", href: "/#stack" },
+  { label: "Work", href: "/#work" },
+];
