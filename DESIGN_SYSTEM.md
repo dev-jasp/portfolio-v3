@@ -127,8 +127,14 @@ app/
   globals.css              tokens, base, component classes  [done]
   layout.tsx               fonts, metadata, Lenis mount     [done]
   page.tsx                 section composition              [done]
+  work/qc-pulse/page.tsx   QC Pulse case study         [partial]
 
 components/
+  case-study/              long-form page parts
+    CaseSection.tsx          numbered section + prose column   [done]
+    CaseFigure.tsx           screenshot well + caption    [done]
+    MeanDriftDiagram.tsx     frozen vs rolling mean       [done]
+    Blank.tsx                an unwritten fact, in accent [done]
   ui/                      design-system primitives
     ArrowButton.tsx          CTA pill, dot-spread hover     [done]
     Icons.tsx                arrow, socials, copyright      [done]

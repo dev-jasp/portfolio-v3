@@ -29,10 +29,8 @@ export const projects: Project[] = [
       "Quality control monitoring for a Vaccine Preventable Disease Referral Laboratory. Plots control runs on Levey-Jennings charts, evaluates them against Westgard multi-rules, and exports on institutional letterhead. Replaced a manual spreadsheet workflow.",
     stack: ["React", "Typescript", "TailwindCSS", "ChartJS", "Supabase"],
     image: "/images/thumbnail/qc-pulse_thumbnail.png",
-    // TODO(work): point at the case study once it exists. `#work` holds the
-    // card's own section, so the button is visible without going anywhere.
     // Cards with no `href` render no button at all.
-    href: "#work",
+    href: "/work/qc-pulse",
   },
   {
     id: "project-two",
