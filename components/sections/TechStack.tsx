@@ -25,9 +25,10 @@ const IMAGE_OFFSET_S = 0.12;
  * components would mean two timelines that only agree by coincidence.
  *
  * The grid collapses to one column at 900px. Rows below size themselves in
- * container-query units against their own column, so that collapse is the only
- * breakpoint this section needs, and they share one height via
- * `minmax(min-content, 1fr)` so the dividers stay evenly spaced.
+ * container-query units against their own column, so this is the only viewport
+ * breakpoint the section needs — the one place a row still has to change shape,
+ * it asks the column how wide it is. They share one height via
+ * `minmax(min-content, 1fr)` so the dividing rules stay evenly spaced.
  */
 export function TechStack() {
   const rootRef = useRef<HTMLElement>(null);
@@ -156,8 +157,8 @@ export function TechStack() {
         </div>
 
         <div className="grid [container-type:inline-size] [grid-template-rows:repeat(4,minmax(min-content,1fr))] content-center">
-          {stack.map((category) => (
-            <StackRow key={category.label} {...category} />
+          {stack.map((category, index) => (
+            <StackRow key={category.label} {...category} divided={index > 0} />
           ))}
         </div>
       </div>
