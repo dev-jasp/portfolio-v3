@@ -29,10 +29,8 @@ export const projects: Project[] = [
       "Quality control monitoring for a Vaccine Preventable Disease Referral Laboratory. Plots control runs on Levey-Jennings charts, evaluates them against Westgard multi-rules, and exports on institutional letterhead. Replaced a manual spreadsheet workflow.",
     stack: ["React", "Typescript", "TailwindCSS", "ChartJS", "Supabase"],
     image: "/images/thumbnail/qc-pulse_thumbnail.png",
-    // TODO(work): point at the case study once it exists. `#work` holds the
-    // card's own section, so the button is visible without going anywhere.
     // Cards with no `href` render no button at all.
-    href: "#work",
+    href: "/work/qc-pulse",
   },
   {
     id: "project-two",
@@ -59,7 +57,30 @@ export const stackIntroLines = [
   "implementation, and user experience at the core.",
 ];
 
-export const heroHeadline = "I build tools people actually have to use —";
+/**
+ * The hero's opening statement, broken where the design breaks it — three
+ * spans, not three sentences. Sentence case at the source; the section sets it
+ * uppercase, the same bargain `stackIntroLines` makes.
+ */
+export const heroIntroLines = [
+  "Fullstack developer who",
+  "build tools people",
+  "actually have to use",
+];
+
+/**
+ * The line the Collaborate aperture uncovers, above its button.
+ *
+ * TODO: a proposal, not settled copy — swap it for whatever the invitation
+ * should actually say.
+ */
+export const collabPitch = "Have a project in mind?";
+
+/**
+ * The Collaborate heading, split around the aperture that opens between the two
+ * halves. Read as one sentence by anything listening — see the section.
+ */
+export const collabHeadingParts = ["Collaborate", "with Me"] as const;
 
 /**
  * The hero's process track. Rendered in order with a connector rule between

@@ -45,13 +45,13 @@ Each grey has exactly one job, so a value can't quietly drift between sections.
 
 The three families split by **role, not by size**: EB Garamond speaks, Space
 Grotesk explains, Space Mono labels. Concretely, the serif carries the hero
-name, the marquee headline, both section headings and the footer name; Space
-Grotesk carries body copy, descriptions, nav, buttons, and the hero's role line
-and process labels.
+name, both section headings and the footer name; Space Grotesk carries body
+copy, descriptions, buttons and the hero's process labels; Space Mono carries
+the hero's opening statement and its inline nav.
 
-The role line under the hero name is the one place that reads as a caption on
-the name rather than as data, so it takes Space Grotesk. Everything Space Mono
-still holds is a label *of* something else — a category, a stack, a stamp.
+The hero's statement is the one place Space Mono is not labelling something
+else. It is set as data on purpose — a spec line for the person the name below
+it belongs to — which is the same reason the About intro takes the mono face.
 
 > The token is still named `--font-wordmark` from when the serif was only the
 > name. It is now the display face, so the name understates it — worth renaming
@@ -127,13 +127,18 @@ app/
   globals.css              tokens, base, component classes  [done]
   layout.tsx               fonts, metadata, Lenis mount     [done]
   page.tsx                 section composition              [done]
+  work/qc-pulse/page.tsx   QC Pulse case study         [partial]
 
 components/
+  case-study/              long-form page parts
+    CaseSection.tsx          numbered section + prose column   [done]
+    CaseFigure.tsx           screenshot well + caption    [done]
+    MeanDriftDiagram.tsx     frozen vs rolling mean       [done]
+    Blank.tsx                an unwritten fact, in accent [done]
   ui/                      design-system primitives
     ArrowButton.tsx          CTA pill, dot-spread hover     [done]
     Icons.tsx                arrow, socials, copyright      [done]
     IconCircle.tsx           outlined social circle         [done]
-    Marquee.tsx              RAF ticker, scroll-reactive    [done]
     Reveal.tsx               IntersectionObserver entrance  [done]
     DarkPanel.tsx            black rounded panel + dot grid [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [done]
@@ -147,7 +152,7 @@ components/
     Footer.tsx               clipped sticky reveal          [done]
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
-    Hero.tsx                 name, role, process row, marquee    [done]
+    Hero.tsx                 statement, nav, process row, name  [done]
     TechStack.tsx            intro, layout, reveals         [done]
     SelectedWork.tsx         heading, badge, cards, archive [done]
     Collaborate.tsx          closing panel + CTA            [done]
@@ -177,10 +182,22 @@ phase is still outstanding; the file's header comment says which part.
 ### Responsive
 
 Three hard breakpoints, each where a layout genuinely stops working rather than
-at a device size: the stack grid collapses at 900px, work cards at 1100px, and
-the marquee headline drops to a smaller clamp under 640px. Everything else is
-fluid — `clamp()` at the usage site — so there is no cascade of overrides to
-keep in sync.
+at a device size: the stack grid collapses at 900px and work cards at 1100px.
+Everything else is fluid — `clamp()` at the usage site — so there is no cascade
+of overrides to keep in sync.
+
+The hero changes shape at 900px too, reusing the stack grid's breakpoint rather
+than adding one of its own. Above it the section is read across: statement and
+nav on one line, process track as a rule spanning the width, name and CTA pair
+sharing the floor. Below it the section is read *down* — the track turns into a
+column down the middle, the CTA pair stacks above the name instead of beside it,
+and the name takes the full width at 10.6vw rather than the 8vw it can afford
+with the pair alongside. `AccentRule` turns with its parent, so the track is one
+component in two orientations, not two components.
+
+The hero nav is allowed to vanish at that breakpoint rather than reflow, because
+it is the one navigation on the page that is a convenience: the fixed pill
+carries all four of its destinations at every width, so it costs nothing.
 
 One layout asks its *column* rather than the viewport: `StackRow` stacks its
 label above its chips under a 480px column, because the two stop agreeing the
@@ -190,23 +207,19 @@ that reason, and it is the only one in the page.
 
 **Full-screen fills use `svh`, never `vh`.** On mobile `100vh` is the viewport
 with browser chrome *retracted*, so a `vh`-sized panel is taller than the screen
-it renders on. This applies to the hero panel, the stack section, the
-Collaborate panel, the footer and the open menu panel. `vh` is still correct for
+it renders on. This applies to the hero, the stack section, the Collaborate
+panel, the footer and the open menu panel. `vh` is still correct for
 proportional sizing (`52vh` on the stack photo), where overshooting is harmless.
 
 **Touch targets are gated on `pointer: coarse`, not width.** A narrow desktop
 window keeps the tight 24px rhythm the footer is drawn around; only actual
 fingers get the 44px floor.
 
-**The hero's padding and its marquee are one value.** The marquee cancels the
-panel's inset to run edge to edge, so both read `--spacing-gutter`. Hardcoding
-either leaves the marquee inset or overhanging at every width but one.
-
-**The hero's process row wraps on content, not at a width.** The stage track
-holds a 240px floor and the CTA pair is only as wide as the button plus the
-avatar, so the two drop onto separate lines at exactly the width where they
-stop fitting on one — no fourth breakpoint, and nothing to re-tune when the
-button's label or the stage names change.
+**The hero's floor wraps on content, not at a width.** The name is only ever as
+wide as its own `clamp()` resolves to and the CTA pair is only as wide as the
+button plus the portrait, so the two drop onto separate lines at exactly the
+width where they stop fitting on one — no extra breakpoint, and nothing to
+re-tune when the button's label or the name changes.
 
 ### Entrances and the first frame
 
@@ -287,9 +300,9 @@ Three things in the design source were deliberately **not** carried over:
    Dropping it exposed a case the fallback had been hiding: the default
    `rootMargin` of `0px 0px -8%` means an element pinned to the bottom edge of
    a full-height panel can never reach the 15% threshold without scrolling, so
-   it would never reveal. The hero marquee is exactly that, and passes
-   `threshold={0}` / `rootMargin="0px"` to opt out. Any future reveal sitting
-   at the foot of a `100vh` section needs the same.
+   it would never reveal. The hero's marquee was exactly that and passed
+   `threshold={0}` / `rootMargin="0px"` to opt out; the marquee is gone, but any
+   future reveal sitting at the foot of a `100svh` section needs the same.
 2. **`_equalizeStackRows`.** It queries `[data-stacklabel]`, which does not
    exist in the markup — dead code. The row grid already equalises heights via
    `grid-template-rows: repeat(4, minmax(min-content, 1fr))`.

@@ -5,7 +5,10 @@ import { SelectedWork } from "@/components/sections/SelectedWork";
 import { TechStack } from "@/components/sections/TechStack";
 
 /**
- * The whole site is this one page; the menu links are anchors into it.
+ * The home page: every section of the site proper, with the menu links as
+ * anchors into it. Case studies are the only routes beside it, which is why
+ * those anchors are written root-relative in `lib/constants.ts` — see the note
+ * there.
  *
  * Order carries meaning beyond sequence — Collaborate has to be the last thing
  * inside `<main>` because it is what covers the footer until you scroll to it.
