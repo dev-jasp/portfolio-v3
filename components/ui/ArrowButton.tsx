@@ -10,7 +10,11 @@ import { ArrowIcon } from "./Icons";
 /** Left margin the arrow slot gains as it opens, on top of the arrow's width. */
 const ARROW_GAP = 12;
 
-/** One button at three scales: work cards, Hero, Collaborate. */
+/**
+ * One button at three scales. Every call site is on `sm` — the page settled on
+ * a single button size, and the two larger steps stayed rather than being
+ * deleted: the sizes are a scale, and a scale with one rung is a constant.
+ */
 const sizes = {
   sm: { pill: "px-[22px] py-[13px] text-[15px]", dot: 8, labelGap: 12, arrow: 16 },
   md: { pill: "px-8 py-[18px] text-[17px]", dot: 10, labelGap: 14, arrow: 19 },

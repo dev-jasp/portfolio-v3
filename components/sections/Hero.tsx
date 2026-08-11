@@ -8,6 +8,37 @@ import { heroNavLinks, site } from "@/lib/constants";
 import { heroIntroLines, heroProcess } from "@/lib/data";
 import { reveal } from "@/lib/design/motion";
 
+/*
+  The nav link's hover: the menu's accent dot, on a gesture the row can take.
+
+  `IndentLink` slides *sideways* and indents with `padding-left`. Down the menu
+  panel both are free — the rows are stacked, so a wider row displaces nothing
+  and there is empty panel to the right to slide into. Along a row neither is:
+  padding shoves every link after the one under the pointer, and a sideways
+  slide runs a label at its own neighbour. The axis with room in a row is the
+  vertical one, so the label lifts instead.
+
+  4px on `--ease-lift` over 260ms is not a new number — it is exactly what
+  `.icon-circle--lift` does in `globals.css`, which is the design system's one
+  hover lift. The dot's fade rides the same timing so the two read as a single
+  movement rather than a lift with a light switch attached.
+
+  The 14px of left padding is permanent, and that is the point: it is the dot's
+  seat, held open whether the dot is showing or not. Revealing the dot then
+  costs no layout at all — nothing reflows, and the dot never lands on the
+  label's first letter. `hover:opacity-100` opts out of the global link fade for
+  the same reason `.indent-link` does: the row is meant to move, not dim.
+  Keyboard users get all of it on `:focus-visible`.
+*/
+const navLinkClass =
+  "group relative inline-flex items-center pl-[14px] hover:opacity-100 pointer-coarse:min-h-11";
+
+const navDotClass =
+  "pointer-events-none absolute top-1/2 left-0 size-[6px] -translate-y-1/2 rounded-full bg-accent opacity-0 transition-opacity duration-[260ms] ease-[var(--ease-lift)] group-hover:opacity-100 group-focus-visible:opacity-100";
+
+const navLabelClass =
+  "inline-block transition-transform duration-[260ms] ease-[var(--ease-lift)] group-hover:-translate-y-[4px] group-focus-visible:-translate-y-[4px]";
+
 /**
  * Hero — the first screen, set directly on paper.
  *
@@ -63,8 +94,9 @@ export function Hero() {
             className="flex items-center gap-[clamp(18px,2.4vw,44px)] pr-[clamp(76px,9vw,160px)] font-mono text-[clamp(13px,1.05vw,20px)] max-[900px]:hidden"
           >
             {heroNavLinks.map((link) => (
-              <a key={link.href} href={link.href}>
-                {link.label}
+              <a key={link.href} href={link.href} className={navLinkClass}>
+                <span aria-hidden="true" className={navDotClass} />
+                <span className={navLabelClass}>{link.label}</span>
               </a>
             ))}
           </nav>
@@ -111,9 +143,20 @@ export function Hero() {
         and the portrait on the middle of the caps, which is where the design
         has them.
 
-        Wraps on content rather than at a width: the name is only ever as wide
-        as its own clamp resolves to, so the pair drops beneath it at exactly
-        the width where the two stop fitting on one line.
+        **This must not wrap, and that is not a preference.** Two separate
+        things break when it does. The button's hover opens a slot for its
+        arrow, making the pill 28px wider — a hover state that participates in
+        layout — so any width with under 28px of slack fits at rest and wraps
+        the instant the pointer lands, throwing the name a full line up and
+        back. And a wrap that survives, rather than flickering, is its own
+        problem: the name lifts off the floor and the pair sits beneath it,
+        which is not this section.
+
+        The fix is on the name, not here — it is sized from the room the pair
+        leaves, *with the button already hovered*. See the `h1` below. That
+        holds one line from 900px up, so `flex-wrap` never fires; it stays only
+        as a backstop, because if a longer name ever outgrew the arithmetic,
+        wrapping is a better failure than overlapping.
 
         `flex-col-reverse` below 900px, so the pair stacks *above* the name
         rather than under it. Reversing the axis rather than reordering the
@@ -137,9 +180,16 @@ export function Hero() {
               at 400 only. */}
           {/* One line at every width, both sides of the breakpoint.
 
-              Above 900px the pair is beside it, so 8vw — which renders at ~68%
-              of the viewport against the ~94% the gutters leave, comfortably
-              inside. Below, it has the line to itself and is measured to that
+              Above 900px it shares the line with the pair, and the ramp is
+              what keeps it there. A flat `vw` cannot: the pill is a fixed
+              174px whatever the viewport, so it eats 21% of the row at 900px
+              and 9% at 1954px, and one coefficient that clears the narrow end
+              leaves the name far too small at the wide one. `9.2vw - 25px` is
+              the line through both — 58px where the room is tightest, 154px at
+              1954 — and it is drawn against the row *with the button hovered*,
+              so it clears by 28px at worst and 91px at 1954.
+
+              Below 900px it has the line to itself and is measured to that
               line instead: the name runs exactly 8.4641x its own font size in
               this face, so dividing the row's width by 9.2 fills ~92% of it and
               can't do anything else. `whitespace-nowrap` is what makes that a
@@ -147,18 +197,27 @@ export function Hero() {
 
               `cqw` because the page reserves a scrollbar gutter permanently, so
               `100vw` measures a width nothing can actually occupy. */}
-          <h1 className="font-wordmark text-[clamp(44px,8vw,200px)] leading-[0.84] tracking-[-0.01em] whitespace-nowrap uppercase max-[900px]:text-center max-[900px]:text-[calc(100cqw/9.2)]">
+          {/* `pl-[0.078em]` is optical alignment, not spacing. EB Garamond's
+              "J" has a negative left side bearing — the hook swings 0.078em
+              left of the glyph's own origin — so a name set flush to the gutter
+              paints *past* it, and at display size that is 8px here and 13px in
+              the footer: enough that the name visibly fails to line up with the
+              statement and the process track above it. An em, so it tracks the
+              clamp. Centred below 900px the same padding shifts the line right
+              by half of it, which is within a fifth of a pixel of the optical
+              centre the two bearings actually ask for. */}
+          <h1 className="font-wordmark pl-[0.078em] text-[clamp(44px,calc(9.2vw-25px),200px)] leading-[0.84] tracking-[-0.01em] whitespace-nowrap uppercase max-[900px]:text-center max-[900px]:text-[calc(100cqw/9.2)]">
             {site.name}
           </h1>
         </Reveal>
 
-        {/* `ml-auto` is a no-op while the two share a line — `justify-between`
-            has already put the pair on the right. It earns its place on the
-            wrapped line between 900px and ~1200px, where the pair would
-            otherwise drop to the far left and sit under the name's first
-            letter with the rest of the row empty. Pushed right, the two lines
-            read as a composed pair of corners instead of a collapse. Reset
-            below 900px, where an auto margin would fight the centred column. */}
+        {/* `ml-auto` is a no-op in every state the section is meant to be in —
+            sharing the line, `justify-between` has already put the pair on the
+            right. It exists for the wrap that should never happen: dropped to
+            its own line the pair would otherwise sit at the far left under the
+            name's first letter, with the rest of the row empty. Pushed right,
+            the failure at least reads as two composed corners. Reset below
+            900px, where an auto margin would fight the centred column. */}
         <Reveal delayMs={reveal.stepMs * 4} className="ml-auto max-[900px]:ml-0">
           {/* Stacks below 900px — pill over portrait, both centred — which is
               what puts the portrait directly above the name it belongs to. */}

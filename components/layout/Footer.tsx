@@ -65,11 +65,17 @@ export function Footer() {
           `100vw` is wider than anything can actually be — sizing off it would
           overflow by the scrollbar's width at every breakpoint. A container
           query measures the box the name is really in.
+
+          `pl-[0.078em]` is optical alignment: EB Garamond's "J" hooks that far
+          left of its own origin, so a name set flush to the gutter paints past
+          it — 13px past, at this size — and stops lining up with the nav above.
+          The divisor carries it: 8.4641 is the name's own width in font sizes,
+          the indent adds 0.078, and 8.62 clears the sum with ~0.8% to spare.
         */}
         <div className="mt-auto [container-type:inline-size]">
           <span
             aria-hidden="true"
-            className="block font-wordmark text-[calc(100cqw/8.55)] leading-[0.82] tracking-[-0.01em] whitespace-nowrap uppercase"
+            className="block font-wordmark pl-[0.078em] text-[calc(100cqw/8.62)] leading-[0.82] tracking-[-0.01em] whitespace-nowrap uppercase"
           >
             {site.name}
           </span>
