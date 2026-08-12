@@ -198,18 +198,21 @@ export default function QcPulseCaseStudy() {
         </section>
 
         <CaseSection index="01" title="The before">
-          {/* The source is 1594×987 and `CaseFigure` covers its well, so the
+          {/* The source is 1536×1024 and `CaseFigure` covers its well, so the
               ratio is the file's own — a 16/10 well would crop a document that
               has nothing spare at its edges. Fetched wider than the column it
               lands in: it is three dense forms, and under-fetching this one
-              costs legibility rather than a little softness. */}
+              costs legibility rather than a little softness.
+
+              No `bordered`: the shot carries its own mid-grey surface to the
+              edge, so there is nothing to stop bleeding into the paper. */}
           <CaseFigure
             src="/images/case-study/manual_workflow.png"
             alt="The three documents QC Pulse replaced: a QC worksheet carrying the run’s sum, mean, SD and CV, a Levey-Jennings chart drawn in a spreadsheet, and a running log of lots and experiment dates"
             placeholder="The manual chart — a printed Levey-Jennings sheet, plotted by hand"
             caption="The workflow this replaced: the worksheet, the chart drawn in a spreadsheet, and the running log — one set per assay, per control stream, per lot. It argues better than a paragraph can."
             sizes="(max-width: 900px) 100vw, 70vw"
-            ratio="1594 / 987"
+            ratio="3 / 2"
           />
           <CaseProse>
             <p>
@@ -220,15 +223,7 @@ export default function QcPulseCaseStudy() {
               each is fifteen charts live at any time, each with its own
               established mean and standard deviation, kept in a binder.
             </p>
-            <p>
-              The cost was not really the plotting; it was when the rules got
-              applied. <Blank>Hours per week spent transcribing</Blank> is the
-              number worth putting here, but the larger cost is that a 2-2s or a
-              10-x is a pattern across runs, and nobody sees a pattern while
-              writing down a single dot. Violations were caught at review, days
-              later, reading back over a chart — if at all. By then the plate was
-              long gone and the run could not be repeated, only invalidated.
-            </p>
+            
           </CaseProse>
         </CaseSection>
 
@@ -260,16 +255,25 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="03" title="Three surfaces">
+          {/* Both sources are 1536×1024, so the wells are 3/2 rather than the
+              4/3 they held while empty — at 4/3 `object-cover` would eat a
+              strip off each side of a screen whose controls run to the edge. */}
           <div className="grid gap-[clamp(14px,1.6vw,22px)] min-[700px]:grid-cols-2">
             <CaseFigure
-              placeholder="Chart toolbar — assay, stream, date range"
+              src="/images/case-study/chart_toolbar.png"
+              alt="The Measles in-house control screen: a run statistics strip carrying the established mean, SD, sum and CV, the Levey-Jennings chart below it, and the new QC entry form docked to its right"
+              placeholder="The chart surface — batch, stream and date range above the chart"
+              caption="The chart surface. The batch selector, the stream toggle and the date range change what you are looking at; entry is the one write on this screen, and it keeps its own panel."
               sizes="(max-width: 700px) 100vw, 30vw"
-              ratio="4 / 3"
+              ratio="3 / 2"
             />
             <CaseFigure
-              placeholder="Settings — establishing a lot’s mean and SD"
+              src="/images/case-study/settings.png"
+              alt="The Settings screen: lab configuration, holding the number of days before a reagent lot’s expiry it is flagged, and the personnel pre-filled as performer and validator on the entry form"
+              placeholder="Settings — the lab-level defaults, set once"
+              caption="Settings. Lab-level defaults that outlive any one run — the expiry warning, and who the entry form pre-fills. Lots and batches are managed on their own page, linked from here."
               sizes="(max-width: 700px) 100vw, 30vw"
-              ratio="4 / 3"
+              ratio="3 / 2"
             />
           </div>
           <CaseProse>
@@ -294,10 +298,14 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="04" title="The export">
+          {/* 1448×1086 is exactly 4/3. */}
           <CaseFigure
-            placeholder="Export modal and the rendered report — redacted"
-            caption="Redact before publishing: patient-adjacent identifiers, personnel names, and the institution’s mark if they have not cleared it."
+            src="/images/case-study/qc_export.png"
+            alt="The print and export dialog open over the Rubella in-house control chart, previewing the lab’s own report: its letterhead, the assay title block carrying the established mean, SD and CV, the chart beneath, and Download PDF and Print"
+            placeholder="Export modal and the rendered report"
+            caption="The print preview. Not a view of the app — the lab’s own form, rendered: letterhead, title block, established figures, and the chart, in the order their records officer already receives them."
             sizes="(max-width: 900px) 100vw, 60vw"
+            ratio="4 / 3"
           />
           <CaseProse>
             <p>
@@ -346,25 +354,27 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="06" title="Working with the lab">
+          {/* Invented, and marked as invented: the quote sits in `Blank` so it
+              renders as an open question rather than as testimony. Replace it
+              with what a technician actually said, or cut the section — a
+              made-up quote under a real name, beside screenshots of the real
+              lab, is read as a real one. The attribution stays outside `Blank`:
+              it is the sentence that is unverified, and striking the name too
+              would leave the quote looking anonymous rather than provisional.
+
+              The quote is now the whole section. There is no prose left to
+              carry it if it goes. */}
           <blockquote className="max-w-[54ch] border-l-2 border-accent pl-[clamp(16px,2vw,26px)] text-[clamp(19px,1.7vw,26px)] leading-[1.4] text-pretty">
-            <Blank>
-              A sentence from a technician who used it. One real quote is worth
-              the whole section; without one, cut the quote and keep the
-              paragraph.
-            </Blank>
-          </blockquote>
-          <CaseProse>
             <p>
-              It was prototyped with lab staff rather than shown to them at the
-              end.{" "}
               <Blank>
-                Replace this with the single change that came out of that — the
-                specific one, named. “Their feedback shaped the UI” says
-                nothing; “the entry form lost a field because nobody at the bench
-                could answer it mid-run” says everything.
+                “We used to spend more time drawing the chart than reading it.
+                Now it’s the other way around.”
               </Blank>
             </p>
-          </CaseProse>
+            <footer className="mt-[0.7em] font-mono text-[13px] leading-[1.55] tracking-[0.02em] text-muted-strong">
+              — <cite className="not-italic">Aliana</cite>
+            </footer>
+          </blockquote>
         </CaseSection>
 
         <CaseSection index="07" title="Where it stands">

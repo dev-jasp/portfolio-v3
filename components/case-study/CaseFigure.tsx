@@ -11,6 +11,12 @@ type Props = {
   /** The well's aspect, as a CSS `aspect-ratio`. Screenshots are mostly 16:10. */
   ratio?: string;
   priority?: boolean;
+  /**
+   * Draws the hairline around the well. For shots that are mostly white — a
+   * document, a light UI — which otherwise bleed into the paper background and
+   * read as floating rather than as a framed image.
+   */
+  bordered?: boolean;
 };
 
 /**
@@ -32,11 +38,18 @@ export function CaseFigure({
   sizes,
   ratio = "16 / 10",
   priority,
+  bordered,
 }: Props) {
   return (
     <figure className="flex flex-col gap-[14px]">
+      {/* The border is drawn on the well rather than the image, so it holds the
+          rounded corner and survives the well being empty. `box-sizing` is
+          border-box globally, so the 1px comes out of the content area and the
+          ratio still describes the box the reader sees. */}
       <div
-        className="relative w-full overflow-hidden rounded-card bg-surface"
+        className={`relative w-full overflow-hidden rounded-card bg-surface ${
+          bordered ? "border border-hairline" : ""
+        }`}
         style={{ aspectRatio: ratio }}
       >
         {src ? (
