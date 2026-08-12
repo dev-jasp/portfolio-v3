@@ -38,6 +38,11 @@ type Props = {
    * with no dot to spread, the pill takes the accent directly.
    */
   variant?: "arrow" | "fill";
+  /**
+   * Opens in a new tab, on the same terms as the social icons: a button that
+   * leaves the site shouldn't take the case study with it.
+   */
+  external?: boolean;
 };
 
 /**
@@ -55,6 +60,7 @@ export function ArrowButton({
   size = "md",
   tone = "onDark",
   variant = "arrow",
+  external = false,
 }: Props) {
   const withArrow = variant === "arrow";
   const rootRef = useRef<HTMLAnchorElement>(null);
@@ -231,7 +237,13 @@ export function ArrowButton({
   }, [reducedMotion, arrowWidth, restColor, restBackground]);
 
   return (
-    <a ref={rootRef} href={href} className="arrow-btn">
+    <a
+      ref={rootRef}
+      href={href}
+      className="arrow-btn"
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
+    >
       <span
         ref={pillRef}
         className={`arrow-btn__pill ${pill} ${

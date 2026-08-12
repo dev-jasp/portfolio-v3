@@ -26,7 +26,13 @@ export function CaseSection({ index, title, children }: Props) {
     <section className="px-gutter">
       <div className="mx-auto grid w-full max-w-[1349px] gap-x-[clamp(24px,5vw,72px)] gap-y-[clamp(16px,2.5vw,28px)] py-[clamp(44px,7vw,96px)] min-[900px]:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
         <Reveal className="min-[900px]:sticky min-[900px]:top-[clamp(28px,8vh,96px)] min-[900px]:self-start">
-          <p className="font-mono text-[13px] tracking-[0.22em] text-accent uppercase">
+          {/* The accent disc from the "Selected Work" count, at label scale.
+              Space Mono rather than that badge's inherited serif: at 13px a
+              synthesised semibold Garamond turns to mud, and mono is already
+              the page's voice for anything that reads as data. Sized in `em`
+              off its own text, so the disc stays round if the label resizes —
+              wide enough for two digits without becoming a pill. */}
+          <p className="inline-grid size-[2.6em] place-items-center rounded-full bg-accent font-mono text-[13px] leading-none tracking-[0.02em] text-paper">
             {index}
           </p>
           {/* No weight utility — the wordmark family is loaded at 400 only. */}
