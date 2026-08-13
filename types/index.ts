@@ -30,4 +30,8 @@ export type Project = {
   imagePlaceholder?: string;
   /** Where "View case study" points. Falls back to the work section. */
   href?: string;
+  /** The running app. External — the case study hero's primary button. */
+  demoUrl?: string;
+  /** The source. External — the quiet link beside that button. */
+  repoUrl?: string;
 };

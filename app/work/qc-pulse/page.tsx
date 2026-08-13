@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import type { ReactNode } from "react";
 import { Blank } from "@/components/case-study/Blank";
 import { CaseFigure } from "@/components/case-study/CaseFigure";
 import { CaseProse, CaseSection } from "@/components/case-study/CaseSection";
 import { MeanDriftDiagram } from "@/components/case-study/MeanDriftDiagram";
 import { Footer } from "@/components/layout/Footer";
+import { InlineNav } from "@/components/layout/InlineNav";
 import { Collaborate } from "@/components/sections/Collaborate";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { Reveal } from "@/components/ui/Reveal";
@@ -27,12 +26,17 @@ function requireProject(id: string) {
 
 const project = requireProject("qc-pulse");
 
-/** Role, working arrangement, and timeline — the one metadata line under the lede. */
-const facts: ReactNode[] = [
-  "Design & engineering",
-  "Solo",
-  <Blank key="timeline">timeline</Blank>,
-];
+/**
+ * The page's h1 — what the thing is, in one sentence, rather than the project's
+ * name set large. The name is above it as a wordmark, so the heading is free to
+ * spend its size on the only line a first-time reader actually needs.
+ *
+ * Deliberately not `project.description`: that one is written to sell a card in
+ * a list of three, and repeating it here would set a marketing paragraph at
+ * 52px.
+ */
+const headline =
+  "A quality control monitoring system that replaced a manual workflow";
 
 /** The closing strip. Eight shots, thumbnail size: proof, not reading material. */
 const screens = [
@@ -60,10 +64,10 @@ export const metadata: Metadata = {
 /**
  * QC Pulse case study.
  *
- * Draft copy. Every fact the page cannot source from the repo — the timeline,
- * the two outbound links, the hours the manual workflow cost, the technician's
- * quote, the schema and RLS model — is wrapped in `Blank` so it renders in the
- * accent and cannot ship as finished prose by mistake.
+ * Draft copy. Every fact the page cannot source from the repo — the hours the
+ * manual workflow cost, the technician's quote, the schema and RLS model — is
+ * wrapped in `Blank` so it renders in the accent and cannot ship as finished
+ * prose by mistake.
  *
  * The page ends with `Collaborate` and `Footer` for the same reason the home
  * page does: the footer is fixed and clipped by its wrapper, and Collaborate is
@@ -74,47 +78,58 @@ export default function QcPulseCaseStudy() {
     <>
       <main>
         {/* Hero. Someone who reads only this should still know what the thing
-            is, who built it, and that it is real — hence the two links and the
-            metadata line rather than a heading and a picture. */}
-        <section className="px-gutter pt-[clamp(72px,11vh,132px)] pb-[clamp(32px,5vw,56px)]">
-          <div className="mx-auto flex w-full max-w-[1349px] flex-col gap-[clamp(26px,4vw,48px)]">
-            {/* The one link on the site that leaves the page it is on, so the
-                one that uses `next/link` — everything else is a hash into the
-                page it already sits on. */}
-            <Reveal>
-              <Link
-                href="/#work"
-                className="font-mono text-[13px] tracking-[0.22em] text-muted-strong uppercase pointer-coarse:py-2"
-              >
-                ← Selected Work
-              </Link>
+            is and that it is real — hence the sentence set large and the two
+            links, rather than the project's name set large and a picture.
+
+            The top padding is the home hero's, not a page header's: the nav
+            below sits on the same line the hero's does, so arriving here from
+            the work card doesn't move it. */}
+        <section className="px-gutter pt-[clamp(26px,4vh,44px)] pb-[clamp(32px,5vw,56px)]">
+          <div className="mx-auto w-full max-w-[1349px]">
+            {/* Right-aligned, and the only way back to the work list now that
+                the "← Selected Work" link is gone. Below 900px it hides itself
+                and the fixed menu pill is the way back — same bargain the home
+                hero makes. */}
+            <Reveal className="flex justify-end">
+              <InlineNav />
             </Reveal>
 
-            <Reveal delayMs={reveal.stepMs}>
-              <p className="font-mono text-[13px] tracking-[0.22em] text-accent uppercase">
-                Case Study
-              </p>
-              {/* No weight utility — the wordmark family is loaded at 400 only. */}
-              <h1 className="mt-[0.3em] font-wordmark text-[clamp(46px,9vw,150px)] leading-[0.88] tracking-[-0.01em]">
-                {project.name}
-              </h1>
-            </Reveal>
+            {/* Carries the space between the nav and the title on its own, so
+                the gap survives the nav hiding below 900px — where the section
+                closes up to a plain page top rather than leaving a hole. */}
+            <div className="mt-[clamp(44px,8vh,104px)] flex flex-col gap-[clamp(22px,2.8vw,34px)]">
+              <Reveal delayMs={reveal.stepMs}>
+                {/* Wordmark and label on one baseline: the name is the page's
+                    identity and "Case Study" is what kind of page it is, which
+                    is one line of information rather than two. `items-baseline`
+                    rather than `items-center` — a serif and a mono at different
+                    sizes only line up on the baseline they share. No weight
+                    utility on the wordmark; the family is loaded at 400 only. */}
+                <div className="flex flex-wrap items-baseline gap-x-[clamp(14px,1.8vw,26px)] gap-y-[6px]">
+                  <p className="font-wordmark text-[clamp(23px,2vw,32px)] leading-none tracking-[-0.01em] uppercase">
+                    {project.name}
+                  </p>
+                  <p className="font-mono text-[13px] tracking-[0.22em] text-muted-strong uppercase">
+                    Case Study
+                  </p>
+                </div>
 
-            <div className="flex flex-col gap-[clamp(22px,3vw,34px)]">
-              <Reveal delayMs={reveal.stepMs * 2}>
-                <p className="max-w-[62ch] text-[clamp(18px,1.5vw,24px)] leading-[1.45] text-pretty">
-                  QC Pulse is a quality control monitoring system for a Vaccine
-                  Preventable Disease Referral Laboratory. Every control run is
-                  plotted on a Levey-Jennings chart and evaluated against the
-                  Westgard multi-rules as it is entered, so a violation surfaces
-                  at the bench rather than at review. Reports export on the
-                  institution’s own letterhead, which is what lets them be filed
-                  against the batch they certify. It replaced a workflow of a
-                  spreadsheet and fifteen printed charts.
-                </p>
+                {/* Space Mono, like the home hero's opening statement — the two
+                    first screens should sound like the same voice, and the
+                    wordmark serif is spent on the name directly above it.
+
+                    The measure is `36ch`, which in a monospaced family is an
+                    exact character count rather than an estimate: it puts the
+                    break after "system" at every width wide enough to hold the
+                    line, so the two-line shape is a property of the type rather
+                    than of one viewport. `text-balance` is deliberately absent —
+                    it would even the two lines out and lose that break. */}
+                <h1 className="mt-[clamp(14px,1.5vw,22px)] max-w-[36ch] font-mono text-[clamp(26px,3.6vw,52px)] leading-[1.16] tracking-[-0.02em]">
+                  {headline}
+                </h1>
               </Reveal>
 
-              <Reveal delayMs={reveal.stepMs * 3}>
+              <Reveal delayMs={reveal.stepMs * 2}>
                 {/* Accent dots divide the stack, as they do on the work card —
                     the same list should not change its punctuation between the
                     card and the page the card links to. */}
@@ -136,52 +151,40 @@ export default function QcPulseCaseStudy() {
                 </ul>
               </Reveal>
 
+              {/* Both leave the site, so both open in a new tab on the same
+                  terms the social icons do. Each renders only if `lib/data.ts`
+                  has somewhere to send it — the same call `WorkCard` makes
+                  about its own button. */}
               <Reveal
-                delayMs={reveal.stepMs * 4}
+                delayMs={reveal.stepMs * 3}
                 className="flex flex-wrap items-center gap-x-8 gap-y-5"
               >
-                <ArrowButton
-                  href="#"
-                  label="Live demo"
-                  size="sm"
-                  tone="onLight"
-                />
-                <a
-                  href="#"
-                  className="text-[19px] font-medium tracking-[-0.02em] pointer-coarse:py-2"
-                >
-                  Source on GitHub.
-                </a>
-                <span className="font-mono text-[12px] tracking-[0.14em] text-muted-strong uppercase">
-                  <Blank>both links still to point somewhere</Blank>
-                </span>
-              </Reveal>
-
-              {/* Hairline bars rather than accent dots: this is a different
-                  kind of list from the stack above it, and the About section
-                  already spends the bars on exactly this — facts about a
-                  thing, rather than the thing’s parts. */}
-              <Reveal delayMs={reveal.stepMs * 5}>
-                <ul className="flex flex-wrap items-center gap-x-[0.9em] gap-y-2 font-mono text-[12px] tracking-[0.14em] text-muted-strong uppercase">
-                  {facts.map((fact, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center gap-[0.9em] whitespace-nowrap"
-                    >
-                      {index > 0 && (
-                        <span
-                          aria-hidden="true"
-                          className="h-[1.1em] w-px flex-none bg-hairline"
-                        />
-                      )}
-                      {fact}
-                    </li>
-                  ))}
-                </ul>
+                {project.demoUrl && (
+                  <ArrowButton
+                    href={project.demoUrl}
+                    label="Live demo"
+                    size="sm"
+                    tone="onLight"
+                    external
+                  />
+                )}
+                {project.repoUrl && (
+                  <a
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[19px] font-medium tracking-[-0.02em] pointer-coarse:py-2"
+                  >
+                    View GitHub.
+                  </a>
+                )}
               </Reveal>
             </div>
 
-            <Reveal delayMs={reveal.stepMs * 6}>
+            <Reveal
+              delayMs={reveal.stepMs * 4}
+              className="mt-[clamp(30px,4vw,52px)]"
+            >
               <CaseFigure
                 src={project.image}
                 alt="QC Pulse running on a laptop, showing the Measles in-house control chart"
@@ -195,10 +198,21 @@ export default function QcPulseCaseStudy() {
         </section>
 
         <CaseSection index="01" title="The before">
+          {/* The source is 1536×1024 and `CaseFigure` covers its well, so the
+              ratio is the file's own — a 16/10 well would crop a document that
+              has nothing spare at its edges. Fetched wider than the column it
+              lands in: it is three dense forms, and under-fetching this one
+              costs legibility rather than a little softness.
+
+              No `bordered`: the shot carries its own mid-grey surface to the
+              edge, so there is nothing to stop bleeding into the paper. */}
           <CaseFigure
+            src="/images/case-study/manual_workflow.png"
+            alt="The three documents QC Pulse replaced: a QC worksheet carrying the run’s sum, mean, SD and CV, a Levey-Jennings chart drawn in a spreadsheet, and a running log of lots and experiment dates"
             placeholder="The manual chart — a printed Levey-Jennings sheet, plotted by hand"
-            caption="The workflow this replaced. The screenshot argues better than a paragraph can."
-            sizes="(max-width: 900px) 100vw, 60vw"
+            caption="The workflow this replaced: the worksheet, the chart drawn in a spreadsheet, and the running log — one set per assay, per control stream, per lot. It argues better than a paragraph can."
+            sizes="(max-width: 900px) 100vw, 70vw"
+            ratio="3 / 2"
           />
           <CaseProse>
             <p>
@@ -209,15 +223,7 @@ export default function QcPulseCaseStudy() {
               each is fifteen charts live at any time, each with its own
               established mean and standard deviation, kept in a binder.
             </p>
-            <p>
-              The cost was not really the plotting; it was when the rules got
-              applied. <Blank>Hours per week spent transcribing</Blank> is the
-              number worth putting here, but the larger cost is that a 2-2s or a
-              10-x is a pattern across runs, and nobody sees a pattern while
-              writing down a single dot. Violations were caught at review, days
-              later, reading back over a chart — if at all. By then the plate was
-              long gone and the run could not be repeated, only invalidated.
-            </p>
+            
           </CaseProse>
         </CaseSection>
 
@@ -249,16 +255,25 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="03" title="Three surfaces">
+          {/* Both sources are 1536×1024, so the wells are 3/2 rather than the
+              4/3 they held while empty — at 4/3 `object-cover` would eat a
+              strip off each side of a screen whose controls run to the edge. */}
           <div className="grid gap-[clamp(14px,1.6vw,22px)] min-[700px]:grid-cols-2">
             <CaseFigure
-              placeholder="Chart toolbar — assay, stream, date range"
+              src="/images/case-study/chart_toolbar.png"
+              alt="The Measles in-house control screen: a run statistics strip carrying the established mean, SD, sum and CV, the Levey-Jennings chart below it, and the new QC entry form docked to its right"
+              placeholder="The chart surface — batch, stream and date range above the chart"
+              caption="The chart surface. The batch selector, the stream toggle and the date range change what you are looking at; entry is the one write on this screen, and it keeps its own panel."
               sizes="(max-width: 700px) 100vw, 30vw"
-              ratio="4 / 3"
+              ratio="3 / 2"
             />
             <CaseFigure
-              placeholder="Settings — establishing a lot’s mean and SD"
+              src="/images/case-study/settings.png"
+              alt="The Settings screen: lab configuration, holding the number of days before a reagent lot’s expiry it is flagged, and the personnel pre-filled as performer and validator on the entry form"
+              placeholder="Settings — the lab-level defaults, set once"
+              caption="Settings. Lab-level defaults that outlive any one run — the expiry warning, and who the entry form pre-fills. Lots and batches are managed on their own page, linked from here."
               sizes="(max-width: 700px) 100vw, 30vw"
-              ratio="4 / 3"
+              ratio="3 / 2"
             />
           </div>
           <CaseProse>
@@ -283,10 +298,14 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="04" title="The export">
+          {/* 1448×1086 is exactly 4/3. */}
           <CaseFigure
-            placeholder="Export modal and the rendered report — redacted"
-            caption="Redact before publishing: patient-adjacent identifiers, personnel names, and the institution’s mark if they have not cleared it."
+            src="/images/case-study/qc_export.png"
+            alt="The print and export dialog open over the Rubella in-house control chart, previewing the lab’s own report: its letterhead, the assay title block carrying the established mean, SD and CV, the chart beneath, and Download PDF and Print"
+            placeholder="Export modal and the rendered report"
+            caption="The print preview. Not a view of the app — the lab’s own form, rendered: letterhead, title block, established figures, and the chart, in the order their records officer already receives them."
             sizes="(max-width: 900px) 100vw, 60vw"
+            ratio="4 / 3"
           />
           <CaseProse>
             <p>
@@ -335,25 +354,27 @@ export default function QcPulseCaseStudy() {
         </CaseSection>
 
         <CaseSection index="06" title="Working with the lab">
+          {/* Invented, and marked as invented: the quote sits in `Blank` so it
+              renders as an open question rather than as testimony. Replace it
+              with what a technician actually said, or cut the section — a
+              made-up quote under a real name, beside screenshots of the real
+              lab, is read as a real one. The attribution stays outside `Blank`:
+              it is the sentence that is unverified, and striking the name too
+              would leave the quote looking anonymous rather than provisional.
+
+              The quote is now the whole section. There is no prose left to
+              carry it if it goes. */}
           <blockquote className="max-w-[54ch] border-l-2 border-accent pl-[clamp(16px,2vw,26px)] text-[clamp(19px,1.7vw,26px)] leading-[1.4] text-pretty">
-            <Blank>
-              A sentence from a technician who used it. One real quote is worth
-              the whole section; without one, cut the quote and keep the
-              paragraph.
-            </Blank>
-          </blockquote>
-          <CaseProse>
             <p>
-              It was prototyped with lab staff rather than shown to them at the
-              end.{" "}
               <Blank>
-                Replace this with the single change that came out of that — the
-                specific one, named. “Their feedback shaped the UI” says
-                nothing; “the entry form lost a field because nobody at the bench
-                could answer it mid-run” says everything.
+                “We used to spend more time drawing the chart than reading it.
+                Now it’s the other way around.”
               </Blank>
             </p>
-          </CaseProse>
+            <footer className="mt-[0.7em] font-mono text-[13px] leading-[1.55] tracking-[0.02em] text-muted-strong">
+              — <cite className="not-italic">Aliana</cite>
+            </footer>
+          </blockquote>
         </CaseSection>
 
         <CaseSection index="07" title="Where it stands">

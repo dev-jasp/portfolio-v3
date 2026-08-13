@@ -31,6 +31,8 @@ export const projects: Project[] = [
     image: "/images/thumbnail/qc-pulse_thumbnail.png",
     // Cards with no `href` render no button at all.
     href: "/work/qc-pulse",
+    demoUrl: "https://qc-pulse.vercel.app/",
+    repoUrl: "https://github.com/dev-jasp/lab-qc-dashboard",
   },
   {
     id: "project-two",
