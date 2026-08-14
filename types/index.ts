@@ -11,6 +11,12 @@ export type SocialLink = {
   href: string;
 };
 
+/** One row of the About reel's profile panel: a mono label over its value. */
+export type SpecItem = {
+  label: string;
+  value: string;
+};
+
 export type StackCategory = {
   /** Rendered uppercase in Space Mono. Keep it one word where possible. */
   label: string;

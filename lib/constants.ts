@@ -32,7 +32,7 @@ export const socials: SocialLink[] = [
 /** Full nav, used by the menu panel. */
 export const navLinks: NavLink[] = [
   { label: "Home", href: "/#top" },
-  { label: "About", href: "/#stack" },
+  { label: "About", href: "/#about" },
   { label: "Selected Work", href: "/#work" },
   { label: "Collab", href: "/#contact" },
 ];
@@ -50,6 +50,6 @@ export const footerLinks: NavLink[] = navLinks.filter(
  */
 export const heroNavLinks: NavLink[] = [
   { label: "Home", href: "/#top" },
-  { label: "About", href: "/#stack" },
+  { label: "About", href: "/#about" },
   { label: "Work", href: "/#work" },
 ];

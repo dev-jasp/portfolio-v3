@@ -1,6 +1,10 @@
-import type { Project, StackCategory } from "@/types";
+import { site } from "@/lib/constants";
+import type { Project, SpecItem, StackCategory } from "@/types";
 
-/** Order matters — rows render top to bottom with dividers between them. */
+/**
+ * Order matters — each category is a panel of the About reel, in this order,
+ * with an accent rule dividing it from the one before.
+ */
 export const stack: StackCategory[] = [
   {
     label: "Language",
@@ -52,17 +56,43 @@ export const projects: Project[] = [
   },
 ];
 
-/** Tech stack intro, split into the lines it reveals on. */
-export const stackIntroLines = [
+/** The About reel's opening statement, split into the lines it reveals on. */
+export const aboutIntroLines = [
   "I'm a fullstack developer focused on building React",
   "applications with thoughtful design, clean",
   "implementation, and user experience at the core.",
 ];
 
 /**
+ * The About reel's profile panel — the facts a visitor scans for before they
+ * read anything. Read as data, set in Space Mono, one pair per row.
+ *
+ * TODO: only `Role` is sourced from `site`. `Focus`, `Based` and `Status` are
+ * proposals — swap them for the real ones, or drop a row, before deploying.
+ */
+export const aboutSpecs: SpecItem[] = [
+  { label: "Role", value: site.role },
+  { label: "Focus", value: "React product interfaces" },
+  { label: "Based", value: "Philippines — working remote" },
+  { label: "Status", value: "Open to new projects" },
+];
+
+/**
+ * The last panel of the reel. It exists so the horizontal ride ends somewhere
+ * rather than simply running out — the line hands off to the work, and the
+ * button is the only focusable thing inside the track.
+ *
+ * TODO: a proposal, not settled copy — the same standing as `collabPitch`.
+ */
+export const aboutOutro = {
+  line: "That's the toolkit. Here's what it has built.",
+  ctaLabel: "See the Work",
+} as const;
+
+/**
  * The hero's opening statement, broken where the design breaks it — three
  * spans, not three sentences. Sentence case at the source; the section sets it
- * uppercase, the same bargain `stackIntroLines` makes.
+ * uppercase, the same bargain `aboutIntroLines` makes.
  */
 export const heroIntroLines = [
   "Fullstack developer who",
