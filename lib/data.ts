@@ -82,11 +82,16 @@ export const aboutSpecs: SpecItem[] = [
  * rather than simply running out — the line hands off to the work, and the
  * button is the only focusable thing inside the track.
  *
+ * The label names a page, not a place on this one. It used to point at the
+ * work section directly below, which is a button that does what scrolling was
+ * about to do anyway; it goes to the case study instead, which is the only
+ * destination here that pays for the click.
+ *
  * TODO: a proposal, not settled copy — the same standing as `collabPitch`.
  */
 export const aboutOutro = {
   line: "That's the toolkit. Here's what it has built.",
-  ctaLabel: "See the Work",
+  ctaLabel: "Read the case study",
 } as const;
 
 /**

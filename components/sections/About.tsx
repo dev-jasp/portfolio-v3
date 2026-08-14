@@ -9,7 +9,13 @@ import { ArrowButton } from "@/components/ui/ArrowButton";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { site } from "@/lib/constants";
-import { aboutIntroLines, aboutOutro, aboutSpecs, stack } from "@/lib/data";
+import {
+  aboutIntroLines,
+  aboutOutro,
+  aboutSpecs,
+  projects,
+  stack,
+} from "@/lib/data";
 import { ease } from "@/lib/design/motion";
 
 // Registered at module scope so the plugin is wired before any effect runs,
@@ -55,12 +61,14 @@ const width = {
 const PANEL = "relative flex flex-col px-gutter";
 
 /**
- * Statement, portrait, profile, hand-off, and one panel per stack category.
- * Only the readout's resting text needs this — the reel counts the panels it
- * actually finds — but a hard-coded "08" would go stale the day a category is
- * added, and it is the first thing on screen.
+ * Where the reel hands off: the first project that has a case study to read.
+ *
+ * Derived rather than named, so it follows the work rather than needing an
+ * edit when the featured project changes — and if no project has a case study
+ * yet, the last panel is a statement with no button, rather than a button with
+ * nowhere to go.
  */
-const PANEL_COUNT = String(stack.length + 4).padStart(2, "0");
+const caseStudy = projects.find((project) => project.href)?.href;
 
 /** Small tracked-out mono, the face this section labels everything in. */
 const EYEBROW =
@@ -96,9 +104,6 @@ const EYEBROW =
 export function About() {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const progressRef = useRef<HTMLSpanElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -196,40 +201,6 @@ export function About() {
           end: () => `+=${distance() * PACE}`,
           scrub: true,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const fill = progressRef.current;
-            if (fill) fill.style.transform = `scaleX(${self.progress})`;
-
-            // Read off the panels themselves, not off an even split of the
-            // range: they are five different widths, so an eighth of the
-            // progress is nowhere near an eighth of the reel.
-            //
-            // The line they are read against sweeps from the viewport's left
-            // edge to its right as the reel completes, which is the only rule
-            // that survives both ends of the width range. Fixed at the left
-            // edge, a wide screen never reaches the last panels — they are on
-            // screen from the start and the track stops moving long before
-            // their edges arrive. Sweeping it means the readout always opens
-            // on the first panel and always lands on the last, whether the
-            // screen holds two panels or five.
-            const scrolled = -(gsap.getProperty(track, "x") as number);
-            const lead = scrolled + window.innerWidth * self.progress;
-            let index = 0;
-            for (let i = 0; i < panels.length; i += 1) {
-              if (panels[i].offsetLeft <= lead) index = i;
-            }
-
-            const counter = counterRef.current;
-            const label = labelRef.current;
-            const name = panels[index].dataset.aboutLabel ?? "";
-            const position = `${String(index + 1).padStart(2, "0")} / ${String(
-              panels.length,
-            ).padStart(2, "0")}`;
-            if (counter && counter.textContent !== position) {
-              counter.textContent = position;
-            }
-            if (label && label.textContent !== name) label.textContent = name;
-          },
         },
       });
 
@@ -325,24 +296,24 @@ export function About() {
         >
           {/* -- 01 Statement ------------------------------------------------
               The section heading, the statement it belongs to, and the only
-              instruction the reel gives. `justify-between` hangs all three off
-              the floor of a full-height panel with the eyebrow at the ceiling,
-              which is what makes the first screen read as a title card rather
-              than as the top of a list. */}
+              instruction the reel gives — the whole group hung off the floor
+              of a full-height panel, with the empty screen above it doing the
+              work an eyebrow used to pretend to do. That is what makes the
+              first frame read as a title card rather than the top of a list.
+
+              A "Fullstack Developer" line sat at the ceiling until the profile
+              panel two along said `Role — Fullstack Developer` and the
+              sentence directly below it opened "I'm a fullstack developer".
+              Three times in one section, and the hero opens with it too. */}
           <article
             data-about-panel
-            data-about-label="Statement"
             style={horizontal ? { width: width.intro } : undefined}
             className={
               horizontal
-                ? `${PANEL} h-full flex-none justify-between py-[clamp(28px,5vh,64px)]`
-                : `${PANEL} w-full gap-[clamp(20px,4vw,32px)]`
+                ? `${PANEL} h-full flex-none justify-end gap-[clamp(24px,4vh,56px)] py-[clamp(28px,5vh,64px)]`
+                : `${PANEL} w-full`
             }
           >
-            <span data-panel-in className={EYEBROW}>
-              {site.role}
-            </span>
-
             <div className="flex flex-col gap-[clamp(20px,3.4vh,44px)]">
               {/* Same scale and tracking as the "Selected Work" heading,
                   deliberately — the two are the page's section headings and
@@ -391,7 +362,6 @@ export function About() {
               frame as the panel crosses the screen — see the parallax above. */}
           <article
             data-about-panel
-            data-about-label="Portrait"
             style={horizontal ? { width: width.portrait } : undefined}
             className={
               horizontal
@@ -425,35 +395,33 @@ export function About() {
               />
             </div>
 
-            <div
+            {/* The name, and nothing beside it. A "Portrait" label on the
+                other end of this line described the photograph above it,
+                which the photograph was already doing. */}
+            <span
               data-panel-in
-              className="flex items-baseline justify-between gap-4"
+              className="font-mono text-[clamp(12px,1.05vw,16px)] tracking-[0.02em] uppercase"
             >
-              <span className="font-mono text-[clamp(12px,1.05vw,16px)] tracking-[0.02em] uppercase">
-                {site.name}
-              </span>
-              <span className={EYEBROW}>Portrait</span>
-            </div>
+              {site.name}
+            </span>
           </article>
 
           {/* -- 03 Profile ---------------------------------------------------
               The facts, set as data. Rows share the panel's height evenly so
               the accent rules between them stay on a rhythm — the same bargain
-              the old stack grid made with `minmax(min-content, 1fr)`. */}
+              the old stack grid made with `minmax(min-content, 1fr)`.
+
+              No heading over them. Each row already carries its own label, and
+              a "Profile" above four labelled rows labels the labels. */}
           <article
             data-about-panel
-            data-about-label="Profile"
             style={horizontal ? { width: width.profile } : undefined}
             className={
               horizontal
-                ? `${PANEL} h-full flex-none justify-between py-[clamp(28px,5vh,64px)]`
-                : `${PANEL} w-full gap-[clamp(20px,4vw,32px)]`
+                ? `${PANEL} h-full flex-none py-[clamp(28px,5vh,64px)]`
+                : `${PANEL} w-full`
             }
           >
-            <span data-panel-in className={EYEBROW}>
-              Profile
-            </span>
-
             <div
               className={
                 horizontal
@@ -485,13 +453,18 @@ export function About() {
           {/* -- 04-07 The stack ----------------------------------------------
               One panel per category, in the order `stack` declares. This is
               what the reel buys: four rows crushed into one column become four
-              panels you arrive at one at a time, each with its own index and
-              room for the list to be read rather than scanned. */}
+              panels you arrive at one at a time, with room for each list to be
+              read rather than scanned.
+
+              The category is the only word on the panel. An "01 — Stack"
+              eyebrow over each was numbering four things that are plainly four
+              things, in a reel that is already counted by the rule along the
+              floor — and four of them, in a row, made the run of panels look
+              like a form. */}
           {stack.map((category, index) => (
             <article
               key={category.label}
               data-about-panel
-              data-about-label={category.label}
               style={horizontal ? { width: width.stack } : undefined}
               className={
                 horizontal
@@ -509,10 +482,6 @@ export function About() {
                 ) : (
                   <AccentRule className="absolute inset-x-0 top-0 -translate-y-1/2" />
                 ))}
-
-              <span data-panel-in className={EYEBROW}>
-                {String(index + 1).padStart(2, "0")} — Stack
-              </span>
 
               {/* Hung from the floor of the panel, not centred in it. Four
                   lists of two to six items centre at four different heights,
@@ -569,7 +538,6 @@ export function About() {
               see the note on the readout below. */}
           <article
             data-about-panel
-            data-about-label="Next"
             style={horizontal ? { width: width.outro } : undefined}
             className={
               horizontal
@@ -584,50 +552,24 @@ export function About() {
               {aboutOutro.line}
             </p>
 
-            <div data-panel-in className="flex">
-              {/* `onLight`: the button rests as ink on paper here, the same as
-                  the hero's. */}
-              <ArrowButton
-                href={site.archiveUrl}
-                label={aboutOutro.ctaLabel}
-                size="sm"
-                tone="onLight"
-              />
-            </div>
+            {caseStudy && (
+              <div data-panel-in className="flex">
+                {/* `onLight`: the button rests as ink on paper here, the same
+                    as the hero's. `sweep` rather than the hero's dot spread —
+                    two of those already fire on this page, and this is the one
+                    button in the section that leaves it. */}
+                <ArrowButton
+                  href={caseStudy}
+                  label={aboutOutro.ctaLabel}
+                  size="sm"
+                  tone="onLight"
+                  variant="sweep"
+                />
+              </div>
+            )}
           </article>
         </div>
 
-        {/*
-          The readout: where you are in the reel, how far through it, and what
-          you are looking at. Hidden from assistive tech — every word of it
-          restates a position that only exists for a pointer, and the panels
-          themselves are already in reading order.
-
-          Both text nodes are written straight to the DOM from `onUpdate`
-          rather than held in state: this changes on every frame of a scrub,
-          and re-rendering eight panels for a two-character counter is how a
-          reel starts dropping frames.
-        */}
-        {horizontal ? (
-          <div
-            aria-hidden="true"
-            className="flex flex-none items-center gap-[clamp(16px,2.5vw,40px)] px-gutter pb-[clamp(18px,3vh,34px)]"
-          >
-            <span ref={counterRef} className={EYEBROW}>
-              01 / {PANEL_COUNT}
-            </span>
-            <span className="relative h-px flex-1 bg-hairline">
-              <span
-                ref={progressRef}
-                className="absolute inset-0 origin-left bg-accent"
-                style={{ transform: "scaleX(0)" }}
-              />
-            </span>
-            <span ref={labelRef} className={EYEBROW}>
-              Statement
-            </span>
-          </div>
-        ) : null}
       </div>
     </section>
   );

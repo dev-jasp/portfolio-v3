@@ -8,8 +8,13 @@ import type { NavLink, SocialLink } from "@/types";
  * whatever route it is rendered on, so from a case study it points at nothing.
  * `useSmoothScroll` still routes these through Lenis while you are on `/`.
  *
- * TODO: the socials, scheduling and archive URLs are still the design's
+ * TODO: the socials, email and scheduling URLs are still the design's
  * placeholders — swap them for the real destinations before deploying.
+ *
+ * `archiveUrl` used to live here, pointing at `/#work`. Nothing pointed at it
+ * that wasn't already inside `#work`, and there is no archive: one of the three
+ * projects is real. Add it back as `/work` when that page exists — the case
+ * studies already sit under it, so the URL shape is waiting.
  */
 export const site = {
   name: "Jaspher Gargar",
@@ -17,8 +22,6 @@ export const site = {
   email: "hello@example.com",
   /** Where "Schedule a Call" points. */
   scheduleUrl: "/#contact",
-  /** Where "View Archive." points. */
-  archiveUrl: "/#work",
   description:
     "Fullstack developer building React applications with thoughtful design, clean implementation, and user experience at the core.",
 } as const;

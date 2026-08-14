@@ -228,6 +228,40 @@
     flex: none;
   }
 
+  /* -- Arrow button, `sweep` -----------------------------------------------
+     The second route to the accent. Where `arrow` spreads a dot from its own
+     centre until it covers the pill, this one slides a block of accent across
+     from the left — radial against linear, from the same origin, so the two
+     read as one family and never as one animation used twice.
+
+     A translated block rather than a scaled one. `scaleX` from a left origin
+     draws the same picture, but reversing it means flipping the origin, and a
+     flip mid-tween moves the painted edge to the other end of the pill in a
+     single frame — exactly the re-entry bug the dot's `coverScale` exists to
+     avoid. Sliding, the hover is one property between two values: interrupt it
+     anywhere, in either direction, and it simply retargets. The pill already
+     clips, so the block waits outside it at both ends.                       */
+  .arrow-btn__sweep {
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    transform: translateX(-100%);
+    will-change: transform;
+  }
+
+  /* Two arrows in a row inside a slot one arrow wide, so the slot is never
+     empty: the visible one leaves to the right and its twin arrives from the
+     left, which reads as a single arrow that keeps going. The slot's width is
+     set inline from the icon's own size — see `ArrowIcon`. */
+  .arrow-btn__relay {
+    display: flex;
+    flex: none;
+    will-change: transform;
+  }
+  .arrow-btn__relay > * {
+    flex: none;
+  }
+
   /* -- Indent link ---------------------------------------------------------
      Accent dot + label. Hover slides the whole row right without fading.   */
   .indent-link {

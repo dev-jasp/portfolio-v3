@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { WorkCard } from "@/components/ui/WorkCard";
-import { site } from "@/lib/constants";
 import { projects } from "@/lib/data";
 
 /**
@@ -59,21 +58,21 @@ export function SelectedWork() {
         </Reveal>
       </div>
 
-      {/* 200px between cards is the rhythm at desktop; on a phone it is most
-          of a screen of nothing, so it scales with the viewport instead. */}
-      <div className="flex flex-col gap-[clamp(72px,14vw,200px)] px-gutter pb-[clamp(32px,6vw,60px)]">
+      {/*
+        200px between cards is the rhythm at desktop; on a phone it is most of
+        a screen of nothing, so it scales with the viewport instead.
+
+        The bottom padding used to belong to the "View Archive." row below this
+        one. That link pointed at `/#work` — the section it was already inside —
+        so it scrolled nowhere, and there is no archive to point it at: one of
+        these three projects is real. It is gone until there is a page worth
+        sending anyone to, the same call the footer made in `569b2ce`. Bring it
+        back as `/work` when the archive exists.
+      */}
+      <div className="flex flex-col gap-[clamp(72px,14vw,200px)] px-gutter pb-[clamp(48px,10vw,96px)]">
         {projects.map((project) => (
           <WorkCard key={project.id} project={project} />
         ))}
-      </div>
-
-      <div className="flex justify-end px-gutter pt-5 pb-[clamp(48px,10vw,96px)]">
-        <a
-          href={site.archiveUrl}
-          className="text-[22px] font-medium tracking-[-0.02em] pointer-coarse:py-2"
-        >
-          View Archive.
-        </a>
       </div>
     </section>
   );
