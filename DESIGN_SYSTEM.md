@@ -143,7 +143,7 @@ components/
     DarkPanel.tsx            black rounded panel + dot grid [todo]
     ImageSlot.tsx            replaces the design's <image-slot>  [done]
     AccentRule.tsx           accent dot, hairline, accent dot    [done]
-    StackRow.tsx             category label + separated chips    [done]
+    StackRow.tsx             category label + separated chips  [unused]
     WorkCard.tsx             media + meta, scroll-scaled    [done]
     IndentLink.tsx           accent dot + label, hover indent    [done]
     AvatarSocials.tsx        socials pop above the hero avatar   [done]
@@ -153,16 +153,17 @@ components/
     SmoothScroll.tsx         Lenis mount                    [done]
   sections/
     Hero.tsx                 statement, nav, process row, name  [done]
-    TechStack.tsx            intro, layout, reveals         [done]
+    About.tsx                horizontal reel, 8 panels      [done]
     SelectedWork.tsx         heading, badge, cards, archive [done]
     Collaborate.tsx          closing panel + CTA            [done]
 
 hooks/                                                      [done]
   useInView.ts             entrance trigger
+  useMediaQuery.ts         live media query, for JS-owned layout
   usePanelTone.ts          menu pill inversion over dark panels
   useReducedMotion.ts      live prefers-reduced-motion
   useScrollScale.ts        work-card scale toward viewport centre
-  useSmoothScroll.ts       Lenis + anchor routing
+  useSmoothScroll.ts       Lenis + anchor routing + ScrollTrigger bridge
 
 lib/                                                        [done]
   constants.ts             identity, socials, nav
@@ -182,12 +183,12 @@ phase is still outstanding; the file's header comment says which part.
 ### Responsive
 
 Three hard breakpoints, each where a layout genuinely stops working rather than
-at a device size: the stack grid collapses at 900px and work cards at 1100px.
-Everything else is fluid — `clamp()` at the usage site — so there is no cascade
-of overrides to keep in sync.
+at a device size: About turns from a reel into a column at 900px and work cards
+change shape at 1100px. Everything else is fluid — `clamp()` at the usage site
+— so there is no cascade of overrides to keep in sync.
 
-The hero changes shape at 900px too, reusing the stack grid's breakpoint rather
-than adding one of its own. Above it the section is read across: statement and
+The hero changes shape at 900px too, sharing About's breakpoint rather than
+adding one of its own. Above it the section is read across: statement and
 nav on one line, process track as a rule spanning the width, name and CTA pair
 sharing the floor. Below it the section is read *down* — the track turns into a
 column down the middle, the CTA pair stacks above the name instead of beside it,
@@ -199,17 +200,19 @@ The hero nav is allowed to vanish at that breakpoint rather than reflow, because
 it is the one navigation on the page that is a convenience: the fixed pill
 carries all four of its destinations at every width, so it costs nothing.
 
-One layout asks its *column* rather than the viewport: `StackRow` stacks its
-label above its chips under a 480px column, because the two stop agreeing the
-moment the stack grid collapses — the same 1000px viewport gives the row a
-480px column in two columns and a 940px one in one. It is a container query for
-that reason, and it is the only one in the page.
+**One breakpoint is JavaScript's, and only that one.** About's horizontal reel
+is a rig — a scrubbed tween, a sticky viewport, a height measured from the
+track — and half of it cannot be written in CSS, so it can't be a layout that
+merely stops applying. `useMediaQuery` holds the mode as React state and both
+class sets are written out in full at each usage site. Everywhere else, a
+breakpoint stays a media query in the class list.
 
 **Full-screen fills use `svh`, never `vh`.** On mobile `100vh` is the viewport
 with browser chrome *retracted*, so a `vh`-sized panel is taller than the screen
-it renders on. This applies to the hero, the stack section, the Collaborate
-panel, the footer and the open menu panel. `vh` is still correct for
-proportional sizing (`52vh` on the stack photo), where overshooting is harmless.
+it renders on. This applies to the hero, About's sticky viewport, the
+Collaborate panel, the footer and the open menu panel. `vh` is still correct for
+proportional sizing (`52vh` on the About portrait read down the page), where
+overshooting is harmless.
 
 **Touch targets are gated on `pointer: coarse`, not width.** A narrow desktop
 window keeps the tight 24px rhythm the footer is drawn around; only actual
@@ -233,6 +236,37 @@ The cost is that the hidden state is real, so every such element also needs an
 explicit reduced-motion branch that applies the end state — otherwise it stays
 hidden for exactly the users who opted out of the animation. `data-reveal` on
 the element gives the `globals.css` rule a second shot at it.
+
+About is the deliberate exception: its panels use `from()` tweens and ship
+*visible*, because its fallback is a different layout rather than a still frame.
+Nothing there is hidden in the markup, so no-JS, reduced motion and every width
+under 901px all get the section as plain stacked content with no branch to
+maintain.
+
+### Scrolling sideways
+
+About is one track of panels that travels left while the page scrolls down. The
+section is as tall as the track is wide (`--about-runway`, written by the reel
+itself on every ScrollTrigger refresh), a sticky viewport holds the reel still
+inside that height, and a scrubbed tween with `ease: "none"` ties the two
+together. Four rules hold it up:
+
+1. **Sticky, not `pin: true`.** ScrollTrigger's pin would insert a spacer and
+   set the section `position: fixed`. Page-level stacking (below) forbids that:
+   nothing between `<body>` and the Collaborate/footer pair may become a
+   containing block. `position: sticky` creates none and is composited by the
+   browser rather than written every frame.
+2. **`ease: "none"` on the travel tween.** Any other curve breaks the tie
+   between where the page is scrolled and where the reel has got to.
+3. **Everything else in the section reads the reel, not the page.** Panel
+   entrances and the portrait's parallax hang off `containerAnimation`, so they
+   fire on horizontal position. The exception is the panels already on screen
+   when the reel starts: measured against the track they arrive before it has
+   moved, so they play off the section rising into view instead.
+4. **Lenis drives GSAP's ticker, and `ScrollTrigger.update` runs on Lenis's own
+   scroll event.** One loop, one order per frame. Left to its own listener
+   ScrollTrigger reads the position a frame late, which is invisible on a fade
+   and very visible on a sticky viewport whose track is written every frame.
 
 ### Hover groups that reach outside their own box
 

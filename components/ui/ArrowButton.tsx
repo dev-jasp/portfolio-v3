@@ -36,8 +36,15 @@ type Props = {
    * arrow on hover. `fill` is a centred label on its own, for places where
    * the button is a quiet link rather than the section's call to action —
    * with no dot to spread, the pill takes the accent directly.
+   *
+   * `sweep` is the same weight as `arrow` and a different gesture: its arrow
+   * is out from the start, the accent crosses the pill instead of spreading
+   * from a point, and the arrow advances a place as it passes. It is for a
+   * button that *leaves* — one that hands you to another page rather than
+   * moving you down this one — which is why the arrow is a promise at rest
+   * rather than a reward for hovering.
    */
-  variant?: "arrow" | "fill";
+  variant?: "arrow" | "fill" | "sweep";
   /**
    * Opens in a new tab, on the same terms as the social icons: a button that
    * leaves the site shouldn't take the case study with it.
@@ -46,10 +53,16 @@ type Props = {
 };
 
 /**
- * The button arrives at the accent on hover, by one of two routes. In `arrow`
+ * The button arrives at the accent on hover, by one of three routes. In `arrow`
  * the dot spreads from its own centre until it covers the pill and a collapsed
- * slot opens to let the arrow slide in; in `fill` the pill simply takes the
- * colour. The label inverts to paper either way.
+ * slot opens to let the arrow slide in; in `sweep` a block of accent crosses
+ * the pill from the left while the arrow advances a place; in `fill` the pill
+ * simply takes the colour. The label inverts to paper every time.
+ *
+ * **Every hover is reversible mid-flight.** Each one is a single property
+ * moving between two fixed values, so a pointer that leaves halfway retargets
+ * rather than restarting — the dot measures its cover from a box that doesn't
+ * scale, and the sweep slides rather than flipping an origin.
  *
  * Structure lives in `.arrow-btn*` in `globals.css`; every animated property
  * belongs to GSAP so the two never fight over the same declaration.
@@ -63,6 +76,9 @@ export function ArrowButton({
   external = false,
 }: Props) {
   const withArrow = variant === "arrow";
+  const withSweep = variant === "sweep";
+  /** Both of the full-weight variants lead with the accent dot. */
+  const withDot = withArrow || withSweep;
   const rootRef = useRef<HTMLAnchorElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const dotSlotRef = useRef<HTMLSpanElement>(null);
@@ -70,6 +86,8 @@ export function ArrowButton({
   const labelRef = useRef<HTMLSpanElement>(null);
   const arrowSlotRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<SVGSVGElement>(null);
+  const sweepRef = useRef<HTMLSpanElement>(null);
+  const relayRef = useRef<HTMLSpanElement>(null);
 
   const reducedMotion = useReducedMotion();
   const { pill, dot, labelGap, arrow: arrowWidth } = sizes[size];
@@ -93,6 +111,8 @@ export function ArrowButton({
     const dotEl = dotRef.current;
     const slotEl = arrowSlotRef.current;
     const arrowEl = arrowRef.current;
+    const sweepEl = sweepRef.current;
+    const relayEl = relayRef.current;
     if (!root || !pillEl || !labelEl) return;
 
     /** The slot inverts alongside the label; `fill` has only the label. */
@@ -100,6 +120,15 @@ export function ArrowButton({
 
     const ctx = gsap.context((self) => {
       if (arrowEl) gsap.set(arrowEl, { opacity: 0 });
+
+      // The sweep's resting position is a percentage in CSS, so that the first
+      // paint has it parked outside the pill without waiting for this effect.
+      // GSAP cannot read it back as one: it parses the computed matrix, which
+      // is pixels by then, and records `x: -242, xPercent: 0`. Tweening
+      // `xPercent` from there would move nothing and the accent would never
+      // arrive. Both axes are written for the same reason `AvatarSocials`
+      // writes both of its own — naming one leaves the other's value standing.
+      if (sweepEl) gsap.set(sweepEl, { x: 0, xPercent: -100 });
 
       /**
        * Measured from the dot's *slot*, not the dot. The dot is the thing GSAP
@@ -129,13 +158,21 @@ export function ArrowButton({
       // it is created, so the slot's width tween has to be created after it.
       const enter = () => {
         self.add(() => {
-          // The dot travels to the accent in `arrow`; in `fill` there is no
-          // dot, so the pill takes the colour itself over the same beat.
-          if (dotEl && dotSlotEl) {
+          // Three routes to the same colour: the dot spreads over the pill in
+          // `arrow`, a block crosses it in `sweep`, and in `fill` — which has
+          // neither — the pill takes the colour itself over the same beat.
+          if (variant === "arrow" && dotEl && dotSlotEl) {
             gsap.to(dotEl, {
               scale: coverScale(dotSlotEl),
               duration: t(0.72),
               ease: ease.inOut,
+              overwrite: true,
+            });
+          } else if (variant === "sweep" && sweepEl) {
+            gsap.to(sweepEl, {
+              xPercent: 0,
+              duration: t(0.54),
+              ease: ease.out,
               overwrite: true,
             });
           } else {
@@ -153,6 +190,18 @@ export function ArrowButton({
             ease: ease.linear,
             overwrite: true,
           });
+          // The relay advances one arrow: the one on show leaves to the right
+          // and its twin arrives from the left, a beat behind the accent that
+          // is crossing under it.
+          if (relayEl) {
+            gsap.to(relayEl, {
+              x: 0,
+              duration: t(0.52),
+              delay: t(0.06),
+              ease: ease.out,
+              overwrite: true,
+            });
+          }
           if (!slotEl || !arrowEl) return;
           gsap.to(slotEl, {
             width: arrowWidth,
@@ -179,10 +228,22 @@ export function ArrowButton({
 
       const leave = () => {
         self.add(() => {
-          if (dotEl) {
+          if (variant === "arrow" && dotEl) {
             gsap.to(dotEl, {
               scale: 1,
               duration: t(0.62),
+              ease: ease.inOut,
+              overwrite: true,
+            });
+          } else if (variant === "sweep" && sweepEl) {
+            // Back the way it came, not onward off the right edge. Continuing
+            // reads better in isolation and cannot survive interruption: it
+            // would have to jump the block back to the left before the next
+            // hover, and a pointer that keeps crossing the button would see
+            // exactly that jump.
+            gsap.to(sweepEl, {
+              xPercent: -100,
+              duration: t(0.46),
               ease: ease.inOut,
               overwrite: true,
             });
@@ -201,6 +262,14 @@ export function ArrowButton({
             ease: ease.linear,
             overwrite: true,
           });
+          if (relayEl) {
+            gsap.to(relayEl, {
+              x: -arrowWidth,
+              duration: t(0.44),
+              ease: ease.inOut,
+              overwrite: true,
+            });
+          }
           if (!slotEl || !arrowEl) return;
           gsap.to(slotEl, {
             width: 0,
@@ -234,7 +303,7 @@ export function ArrowButton({
     }, rootRef);
 
     return () => ctx.revert();
-  }, [reducedMotion, arrowWidth, restColor, restBackground]);
+  }, [reducedMotion, arrowWidth, restColor, restBackground, variant]);
 
   return (
     <a
@@ -248,9 +317,14 @@ export function ArrowButton({
         ref={pillRef}
         className={`arrow-btn__pill ${pill} ${
           tone === "onLight" ? "arrow-btn__pill--ink" : ""
-        } ${withArrow ? "" : "justify-center text-center"}`}
+        } ${withDot ? "" : "justify-center text-center"}`}
       >
-        {withArrow && (
+        {/* First child, and unpositioned relative to its siblings: the dot and
+            the label both establish a stacking order after it, so the accent
+            crosses *under* everything the button says. */}
+        {withSweep && <span ref={sweepRef} className="arrow-btn__sweep" />}
+
+        {withDot && (
           <span
             ref={dotSlotRef}
             className="arrow-btn__dot-slot"
@@ -267,13 +341,34 @@ export function ArrowButton({
         <span
           ref={labelRef}
           className="arrow-btn__label"
-          style={withArrow ? { marginLeft: labelGap } : undefined}
+          style={withDot ? { marginLeft: labelGap } : undefined}
         >
           {label}
         </span>
         {withArrow && (
           <span ref={arrowSlotRef} className="arrow-btn__arrow-slot">
             <ArrowIcon ref={arrowRef} size={arrowWidth} />
+          </span>
+        )}
+        {withSweep && (
+          <span
+            ref={arrowSlotRef}
+            className="arrow-btn__arrow-slot"
+            // Open from the start and exactly one arrow wide — the inline
+            // width is what overrides the collapsed slot `arrow` needs. It
+            // shares that class, and the ref, to invert with the label.
+            style={{ width: arrowWidth, marginLeft: ARROW_GAP }}
+          >
+            <span
+              ref={relayRef}
+              className="arrow-btn__relay"
+              // Parked one arrow to the left, so the twin is the one on show
+              // and the first has room to arrive from outside the slot.
+              style={{ transform: `translateX(${-arrowWidth}px)` }}
+            >
+              <ArrowIcon size={arrowWidth} />
+              <ArrowIcon size={arrowWidth} />
+            </span>
           </span>
         )}
       </span>
