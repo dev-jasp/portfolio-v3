@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EB_Garamond, Space_Grotesk, Space_Mono } from "next/font/google";
+import { Loader } from "@/components/layout/Loader";
 import { Menu } from "@/components/layout/Menu";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { site } from "@/lib/constants";
@@ -50,6 +51,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${spaceGrotesk.variable} ${spaceMono.variable} ${ebGaramond.variable} antialiased`}
     >
       <body>
+        {/* First in the body, and it stays mounted across client navigation —
+            so it plays once per page load, not once per route. Its own
+            `z-index` is what puts it over the menu, not this order. */}
+        <Loader />
         <SmoothScroll />
         <Menu />
         {children}

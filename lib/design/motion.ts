@@ -53,6 +53,53 @@ export const reveal = {
   rootMargin: "0px 0px -8% 0px",
 } as const;
 
+/**
+ * The opening curtain — see `components/layout/Loader.tsx`.
+ *
+ * Split by unit on purpose: the two waits are milliseconds because they are
+ * `setTimeout`s, and everything the timeline touches is seconds because that is
+ * what GSAP takes.
+ *
+ * The panels' overscan is *not* here. It is a structural fact about the sheet
+ * rather than a timing one, it lives in `.loader__panel`, and GSAP keeps it
+ * automatically — the lift tweens `yPercent` and `rotation`, and reading the
+ * existing matrix to do that preserves the scale already in it.
+ */
+export const loader = {
+  /** Columns the sheet is cut into. The markup loops over this; CSS just flexes. */
+  panels: 4,
+  /** Degrees the columns tilt through as they leave. */
+  tilt: -6,
+  /**
+   * Extra travel on top of the panel's own height, so it leaves completely.
+   *
+   * The tilt drops the trailing bottom corner below the rest of the edge by
+   * half the column's width times the sine of the angle — about 1.4vw at 6deg
+   * across four columns. Travelling exactly one panel height therefore ends
+   * with that corner still on screen, and it stays there until the component
+   * unmounts, which reads as the curtain stalling just before it vanishes.
+   *
+   * In `vw` because the drop is a share of the column's *width*, which makes it
+   * one number at every window shape — unlike the bleed, which is a share of
+   * the height and is measured in `vh` for the same reason.
+   */
+  clearance: "-3vw",
+  /** Shortest the curtain may stay up, so a warm reload never flashes it. */
+  minMs: 1200,
+  /** Longest it may wait on fonts before lifting anyway. */
+  maxMs: 3600,
+  /** Where the meter stalls while it is still waiting. */
+  crawlTo: 0.92,
+  /** Seconds: the meter's run from `crawlTo` to full, once the page is ready. */
+  settle: 0.3,
+  lift: { duration: 0.95, stagger: 0.07 },
+  /**
+   * Seconds before the lift ends that the page below is allowed to start its
+   * own entrances, so the two overlap instead of queueing.
+   */
+  handoff: 0.6,
+} as const;
+
 /** Menu link stagger, in and out. */
 export const menuLinks = {
   baseDelayMs: 180,

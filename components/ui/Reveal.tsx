@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type ReactNode } from "react";
+import { useEntranceReleased } from "@/hooks/useEntrance";
 import { useInView } from "@/hooks/useInView";
 import { easeCss, reveal } from "@/lib/design/motion";
 
@@ -31,6 +32,12 @@ type Props = {
  * The transition is CSS rather than GSAP so that the `[data-reveal]` rule in
  * `globals.css` can resolve it to its end state under `prefers-reduced-motion`
  * without JavaScript needing to know.
+ *
+ * Held shut until the opening curtain lifts. `IntersectionObserver` has no idea
+ * anything is painted over it, so on a cold load every entrance on the first
+ * screen would otherwise play behind the sheet and the page would arrive
+ * already revealed. The observer is untouched — only the moment its result is
+ * applied moves. See `useEntranceReleased`.
  */
 export function Reveal({
   children,
@@ -41,7 +48,9 @@ export function Reveal({
   style,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const shown = useInView(ref, { threshold, rootMargin });
+  const inView = useInView(ref, { threshold, rootMargin });
+  const released = useEntranceReleased();
+  const shown = inView && released;
 
   const transition = `opacity ${reveal.durationMs}ms ${easeCss.reveal} ${delayMs}ms, transform ${reveal.durationMs}ms ${easeCss.reveal} ${delayMs}ms`;
 

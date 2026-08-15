@@ -296,6 +296,108 @@
   .icon-circle--lift:hover {
     transform: translateY(-4px);
   }
+
+  /* -- Loader --------------------------------------------------------------
+     The opening curtain. Structure only — every animated property belongs to
+     the timeline in `Loader.tsx`, on the same terms as `.arrow-btn`.        */
+  .loader {
+    position: fixed;
+    inset: 0;
+    /* Above the open menu panel at 95, which is the highest thing else. */
+    z-index: 100;
+    /* The sheet below hangs past both edges on purpose; this keeps that bleed
+       from ever counting as page width. */
+    overflow: hidden;
+  }
+
+  /* The columns, as a row wider than the screen.
+
+     The overhang is the fix for a real gap, not a safety margin. Rotating a
+     panel about its own centre swings its bottom corners sideways, and the
+     bottom edge is the part still on screen — so the outermost column pulls its
+     outer edge *inward* as it turns and a wedge of paper opens along the edge of
+     the window. The worst case is half the panel's height times the sine of the
+     tilt, which is why the bleed is in `vh`: the gap is a share of the panel's
+     height, so no fixed scale covers it at every aspect ratio. At 6deg that
+     worst case is 5.6vh, and this clears it at any window shape. */
+  .loader__sheet {
+    position: absolute;
+    top: 0;
+    right: -8vh;
+    /* A little past the bottom too, so a fractional viewport height can't
+       leave a hairline of paper under the sheet at rest. It costs nothing on
+       the way out — the lift is measured from the panel's own height. */
+    bottom: -2vh;
+    left: -8vh;
+    display: flex;
+  }
+
+  /* One column. Drawn wider than its share of the row so that the same tilt
+     can't open the *interior* seams either — there the trailing column is
+     always the lower one, so a little overlap is all it takes.
+
+     Horizontal only. A vertical scale here would hang the panel below its own
+     box by half the excess, and since the lift travels exactly one panel height
+     that overhang survives to the end of the tween as a band of ink across the
+     top of the screen — which then sits there until the component unmounts.
+     Nothing needs it: at rest the tilt is zero, and by the time there is any
+     tilt the panel has already started uncovering the page on purpose.
+
+     Set here rather than by the timeline so the sheet is already right in the
+     server-rendered HTML. GSAP reads this matrix when it starts and keeps the
+     scale in it — the lift only adds translation and rotation. */
+  .loader__panel {
+    flex: 1;
+    background: var(--color-ink);
+    transform: scaleX(1.08);
+    will-change: transform;
+  }
+
+  /* Centring only — deliberately not the thing that animates. It is the size of
+     the window, and promoting it would hand the compositor a second full-screen
+     layer to carry beside the four that actually move, for the sake of fading
+     one line of text. The word inside it is what leaves. */
+  .loader__mark {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-paper);
+  }
+  .loader__word {
+    position: relative;
+    margin: 0;
+    white-space: nowrap;
+    will-change: transform, opacity;
+  }
+
+  /* The progress meter, and the only one. A sheet of the curtain's own colour
+     over the wordmark, collapsing to the right so the name fills in from the
+     left. Partial rather than opaque on purpose: the covered half stays legible
+     as the dim half of one word, where an opaque sheet would read as the name
+     being typed on. Bled slightly past the text box so the caps clear it. */
+  .loader__wipe {
+    position: absolute;
+    inset: -0.06em -0.02em;
+    background: var(--color-ink);
+    opacity: 0.8;
+    transform-origin: 100% 50%;
+    will-change: transform;
+  }
+
+  .loader__meta {
+    position: absolute;
+    right: var(--spacing-gutter);
+    bottom: clamp(18px, 3vh, 34px);
+    left: var(--spacing-gutter);
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    will-change: transform, opacity;
+  }
 }
 
 /* ============================================================================
@@ -319,5 +421,14 @@
   [data-reveal] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* The curtain is entirely motion — there is no reduced version of it worth
+     showing, only a black screen for a second. Hidden here rather than left to
+     the component so it never reaches paint: `Loader` renders on the server,
+     where the preference is unknowable, and an effect would remove it a frame
+     too late. The effect still runs, and releases the page immediately. */
+  .loader {
+    display: none;
   }
 }
